@@ -28,7 +28,7 @@
         \vspace{0.8cm}
             
         \Large
-        Despartamento de Ingeniería Electrónica y Telecomunicaciones\\
+        Departamento de Ingeniería Electrónica y Telecomunicaciones\\
         Universidad de Antioquia\\
         Medellín\\
         Octubre de 2021
@@ -44,24 +44,63 @@ Para el proyecto final, inicialmente se plantean 5 niveles: dos de los cuales te
 \includegraphics[width=10cm, height=5cm]{imagenes/bordes.jpg}
 \centering
 \caption{Contorno de los mapas.}
-\label{fig:diagram}
 \end{figure}
 
 \begin{figure}[h]
 \includegraphics[width=10cm, height=5cm]{imagenes/mapa1.jpg}
 \centering
 \caption{Mapa nivel 1.}
-\label{fig:diagram}
 \end{figure}
 
 \begin{figure}[h]
 \includegraphics[width=10cm, height=5cm]{imagenes/mapa3.jpg}
 \centering
 \caption{Mapa nivel 3.}
-\label{fig:diagram}
+\end{figure}
+
+\newpage
+\subsection{Bloques A}
+\par En orden de nivel:
+\begin{figure}
+\includegraphics[width=12cm]{imagenes/bloquesa.png}
+\centering
+\end{figure}
+
+\subsection{Bloques B}
+\par En orden de nivel:
+\begin{figure}[h]
+\includegraphics[width=5cm]{imagenes/bloquesb.png}
+\centering
+\caption{Bloques B.}
+\end{figure}
+
+\newpage
+\subsection{Personaje y poder}
+\par En orden de nivel:
+\begin{figure}[h]
+\includegraphics[width=2.5cm]{imagenes/PERSONAJE.png}
+\centering
+\caption{Personaje.}
+\end{figure}
+
+\subsection{Enemigos y poderes}
+\par En orden de nivel:
+\begin{figure}[h]
+\includegraphics[width=12cm]{imagenes/villanos.png}
+\centering
+\caption{Enemigos.}
 \end{figure}
 
 \section{Inconvenientes}
-De primeras, uno de los impedimentos que se me presenta es el hecho de colocar niveles y múltiples escenas a una misma ventana. Sin embargo, sin pensarlo mucho, se plantea que cada vez que una escena termine su función (menú o juego) todos los items de la escena se eliminan y se crean unos nuevos con la utilidad siguiente.
+De primeras, uno de los impedimentos que se me presenta es el hecho de colocar niveles y múltiples escenas a una misma ventana. Sin embargo, sin pensarlo mucho, se plantea que cada vez que una escena termine su función (menú o juego) todos los ítems de la escena se eliminan y se crean unos nuevos con la utilidad siguiente.
+\par Luego de haber meditado bastante la idea, revisando el código y con el conocer que se pueden crear distintas escenas en el programa, se propone crear varias de éstas para cada pantalla que se requiera (inicio, niveles, etc.) y, luego, mostratrlas con \textsl{ui-$>$graphicsView-$>$setScene($<$escena$>$);}.
+
+\section{Cronograma}
+\begin{figure}[h]
+\includegraphics[width=12cm]{imagenes/cronograma.png}
+\centering
+\caption{Cronograma de la implementación.}
+\label{fig:diagram}
+\end{figure}
 
 \end{document}
