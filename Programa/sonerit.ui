@@ -6,34 +6,61 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1369</width>
-    <height>1096</height>
+    <width>1258</width>
+    <height>1057</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>sonerit</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <property name="maximumSize">
-    <size>
-     <width>1250</width>
-     <height>1000</height>
-    </size>
-   </property>
    <widget class="QGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1250</width>
-      <height>1000</height>
+      <width>1260</width>
+      <height>1010</height>
      </rect>
     </property>
-    <property name="maximumSize">
-     <size>
-      <width>1250</width>
-      <height>1000</height>
-     </size>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>680</y>
+      <width>211</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>START</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>450</x>
+      <y>260</y>
+      <width>181</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>STONERIT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="continue_button">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>750</y>
+      <width>211</width>
+      <height>51</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CONTINUE</string>
     </property>
    </widget>
   </widget>
@@ -42,7 +69,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1369</width>
+     <width>1258</width>
      <height>21</height>
     </rect>
    </property>

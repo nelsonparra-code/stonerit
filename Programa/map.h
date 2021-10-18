@@ -1,6 +1,7 @@
 #ifndef MAP_H
 #define MAP_H
 
+#include <QImage>
 #include <string>
 #include <vector>
 #include <fstream>

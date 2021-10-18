@@ -2,10 +2,14 @@
 
 map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v)
 {
+    QString qstrT = QString::fromStdString(t);
     std::vector<int> auxVctr {};
+    QImage aBlock(qstrT+"a.png"), bBlock(qstrT+"b.png"), bg(qstrT+"bg.png");
+    QBrush aBlockBrush(aBlock),bBlockBrush(bBlock),bgBrush(bg);
+    s->setBackgroundBrush(bgBrush);
 
     std::ifstream inFile;
-    inFile.open(t);
+    inFile.open(t+"map.txt");
 
     std::string data;
     inFile >> data;
@@ -24,11 +28,11 @@ map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v)
         int x=0;
         for(unsigned long long column=0;column<value.at(row).size();column++){
             if(value.at(row).at(column)==1){
-                QGraphicsRectItem* temp = s->addRect(x,y,blockSize,blockSize,QPen(Qt::black),Qt::gray);
+                QGraphicsRectItem* temp = s->addRect(x,y,blockSize,blockSize,QPen(Qt::transparent),aBlockBrush);
                 v->push_back(temp);
             }
             else if(value.at(row).at(column)==2){
-                QGraphicsRectItem* temp = s->addRect(x,y,blockSize,blockSize,QPen(Qt::black),Qt::red);
+                QGraphicsRectItem* temp = s->addRect(x,y,blockSize,blockSize,QPen(Qt::black),bBlockBrush);
                 v->push_back(temp);
             }
             x+=blockSize;
