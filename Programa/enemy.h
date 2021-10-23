@@ -10,7 +10,8 @@ class enemy : /*public QObject, */public character
 {
     //Q_OBJECT
 public:
-    explicit enemy(/*QObject *parent = nullptr*/);
+    explicit enemy(int,int,int/*QObject *parent = nullptr*/);
+    enemy(QString/*QObject *parent = nullptr*/);
     QPen* border;
     //QBrush shapeBrush(*charImg);
     QBrush* shapeBrush;

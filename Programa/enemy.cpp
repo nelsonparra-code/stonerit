@@ -1,15 +1,16 @@
 #include "enemy.h"
 #include <QGraphicsRectItem>
 
-enemy::enemy(/*QObject *parent) : QObject(parent*/)
+enemy::enemy(int _health, int _damage, int _movSpeed/*QObject *parent) : QObject(parent*/)
 {
-    health = 250;
+    health = _health;
 
-    powerDamage = 50;
-    powerDistance = 500;
-
-    charImg = new QImage("../usuario/");
-    border = new QPen(Qt::black);
-    //QBrush shapeBrush(*charImg);
-    shapeBrush = new QBrush(Qt::red);
+    powerDamage = _damage;
+    movementSpeed = _movSpeed;
+}
+enemy::enemy(QString s/*QObject *parent) : QObject(parent*/)
+{
+    charImg = QImage(s);
+    border = new QPen(Qt::transparent);
+    shapeBrush = new QBrush(charImg);
 }

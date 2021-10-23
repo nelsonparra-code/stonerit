@@ -10,6 +10,7 @@
 #include <QFlag>
 #include <QKeyEvent>
 #include <vector>
+#include <list>
 
 #include <iostream>
 
@@ -27,6 +28,7 @@ public:
 
     void changeScene();
     bool detectCollision(QGraphicsItem*);
+    bool bullCollToEnm();
 protected slots:
     void move();
     void enemyShoot();
@@ -45,13 +47,14 @@ protected:
     void keyPressEvent(QKeyEvent *event);
 private slots:
     void on_continue_button_clicked();
-
+    void moveHeroBullets();
     void on_pushButton_clicked();
 
 private:
     Ui::sonerit *ui;
 
     QTimer* timerM;
+    QTimer* timerHB;
 
     qreal hXPOS=60, hYPOS=60;
     qreal eXPOS=1000,eYPOS=60;
@@ -59,11 +62,24 @@ private:
 
     QGraphicsItem* h;
     QGraphicsItem* e;
-    std::vector<QGraphicsItem*> enemies;
+    std::vector<QGraphicsRectItem*> enemies;
+    std::vector<QGraphicsRectItem*> enemies2;
+    std::vector<QGraphicsRectItem*> enemies3;
+    std::vector<QGraphicsRectItem*> enemies4;
+    std::vector<QGraphicsRectItem*> enemies5;
     std::vector<QGraphicsItem*> bullets;
+    std::list<QGraphicsItem*> heroBullets;
     QGraphicsItem* bullet;
+    void createHeroBullet();
 
+    int activeScene;
+    std::vector<QGraphicsRectItem*> activeBlocks;
     std::vector<QGraphicsRectItem*> blocksVector;
+    std::vector<QGraphicsRectItem*> blocksVector2;
+    std::vector<QGraphicsRectItem*> blocksVector3;
+    std::vector<QGraphicsRectItem*> blocksVector4;
+    std::vector<QGraphicsRectItem*> blocksVector5;
+    std::vector<std::vector<QGraphicsRectItem*>> allBlocksVector {blocksVector,blocksVector2,blocksVector3,blocksVector4,blocksVector5};
 
 };
 #endif // SONERIT_H

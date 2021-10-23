@@ -12,9 +12,10 @@ public:
     /*classtype*/ int power;
     int powerDamage;
     int powerDistance;
+    int movementSpeed;
 
     QGraphicsRectItem* shape;
-    QImage* charImg;
+    QImage charImg;
 };
 
 #endif // CHARACTER_H
