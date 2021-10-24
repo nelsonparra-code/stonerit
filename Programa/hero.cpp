@@ -1,14 +1,15 @@
 #include "hero.h"
 
-hero::hero(/*QObject *parent) : QObject(parent*/)
+hero::hero(int _health, int _damage, int _moveSp, std::string str/*QObject *parent) : QObject(parent*/)
 {
-    health = 500;
+    health = _health;
 
-    powerDamage = 75;
-    powerDistance = 500;
+    powerDamage = _damage;
+    movementSpeed = _moveSp;
 
-    charImg = QImage("../usuario/");
-    border = new QPen(Qt::black);
-    //QBrush shapeBrush(*charImg);
-    shapeBrush = new QBrush(Qt::blue);
+    QString qstr = QString::fromStdString(str+"h.png");
+
+    charImg = QImage(qstr);
+    border = new QPen(Qt::transparent);
+    shapeBrush = new QBrush(charImg);
 }

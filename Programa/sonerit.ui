@@ -27,8 +27,8 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>680</y>
+      <x>500</x>
+      <y>590</y>
       <width>211</width>
       <height>51</height>
      </rect>
@@ -53,14 +53,27 @@
    <widget class="QPushButton" name="continue_button">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>750</y>
+      <x>500</x>
+      <y>780</y>
       <width>211</width>
       <height>51</height>
      </rect>
     </property>
     <property name="text">
      <string>CONTINUE</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>670</y>
+      <width>70</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>2 Player</string>
     </property>
    </widget>
   </widget>

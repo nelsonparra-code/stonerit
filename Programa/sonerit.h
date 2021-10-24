@@ -4,7 +4,7 @@
 #include <QMainWindow>
 #include <QGraphicsScene>
 #include <hero.h>
-#include <enemy.h>
+#include "enemy.h"
 #include "map.h"
 #include <QTimer>
 #include <QFlag>
@@ -29,6 +29,7 @@ public:
     void changeScene();
     bool detectCollision(QGraphicsItem*);
     bool bullCollToEnm();
+    bool heroExists=false, secondHeroExists=false;
 protected slots:
     void move();
     void enemyShoot();
@@ -53,24 +54,29 @@ private slots:
 private:
     Ui::sonerit *ui;
 
+    QTimer* timer;
     QTimer* timerM;
     QTimer* timerHB;
 
-    qreal hXPOS=60, hYPOS=60;
-    qreal eXPOS=1000,eYPOS=60;
+    qreal h1XPOS=70, h1YPOS=70;
+    qreal h2XPOS=70, h2YPOS=900;
+    qreal eXPOS=1000,eYPOS=50;
     int enemyMovConst = 20;
 
-    QGraphicsItem* h;
+    QGraphicsItem* h1;
+    QGraphicsItem* h2;
+    QGraphicsItem* heros[2] = {h1,h2};
     QGraphicsItem* e;
     std::vector<QGraphicsRectItem*> enemies;
     std::vector<QGraphicsRectItem*> enemies2;
     std::vector<QGraphicsRectItem*> enemies3;
     std::vector<QGraphicsRectItem*> enemies4;
     std::vector<QGraphicsRectItem*> enemies5;
+
     std::vector<QGraphicsItem*> bullets;
     std::list<QGraphicsItem*> heroBullets;
     QGraphicsItem* bullet;
-    void createHeroBullet();
+    void createHeroBullet(QGraphicsItem*);
 
     int activeScene;
     std::vector<QGraphicsRectItem*> activeBlocks;
@@ -79,7 +85,13 @@ private:
     std::vector<QGraphicsRectItem*> blocksVector3;
     std::vector<QGraphicsRectItem*> blocksVector4;
     std::vector<QGraphicsRectItem*> blocksVector5;
-    std::vector<std::vector<QGraphicsRectItem*>> allBlocksVector {blocksVector,blocksVector2,blocksVector3,blocksVector4,blocksVector5};
+    std::vector<QGraphicsRectItem*> allBlocksVector[5] = {blocksVector,blocksVector2,blocksVector3,blocksVector4,blocksVector5};
+
+    enemy enemy1 = enemy(100,20,7);
+    enemy enemy2 = enemy(200,30,5);
+    enemy enemy3 = enemy(125,25,9);
+    enemy enemy4 = enemy(200,40,9);
+    enemy enemy5 = enemy(300,50,11);
 
 };
 #endif // SONERIT_H

@@ -13,8 +13,13 @@ public:
     explicit enemy(int,int,int/*QObject *parent = nullptr*/);
     enemy(QString/*QObject *parent = nullptr*/);
     QPen* border;
-    //QBrush shapeBrush(*charImg);
     QBrush* shapeBrush;
+    void moveEnemies1(std::vector<QGraphicsRectItem*>,std::vector<QGraphicsRectItem*>,int*,qreal*);
+    void moveEnemie2();
+    void moveEnemies3();
+    void moveEnemie4();
+    void moveEnemie5();
+    bool detectCollision(QGraphicsItem*,std::vector<QGraphicsRectItem*>);
 
 signals:
 

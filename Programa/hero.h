@@ -10,7 +10,7 @@ class hero : public character/*, public QObject*/
 {
     //Q_OBJECT
 public:
-    explicit hero(/*QObject *parent = nullptr*/);
+    explicit hero(int,int,int,std::string/*QObject *parent = nullptr*/);
     QPen* border;
     //QBrush shapeBrush(*charImg);
     QBrush* shapeBrush;

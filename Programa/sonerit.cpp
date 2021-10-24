@@ -1,3 +1,4 @@
+#define HERO "../StonerIt/BD/"
 #define MAP_1 "../StonerIt/BD/map1/"
 #define MAP_2 "../StonerIt/BD/map2/"
 #define MAP_3 "../StonerIt/BD/map3/"
@@ -31,23 +32,23 @@ sonerit::sonerit(QWidget *parent)
         map4(MAP_4,scene4,&blocksVector4,&enemies4),
         map5(MAP_5,scene5,&blocksVector5,&enemies5);
 
-    hero Hero;
-    enemy enemy1(100,20,7),
-          enemy2(200,30,5),
-          enemy3(125,25,9),
-          enemy4(200,40,9),
-          enemy5(300,50,11);
+    hero Hero(500,20,7,HERO);
+    h1 = ui->graphicsView->scene()->addRect(0,0,30,30,*Hero.border,*Hero.shapeBrush);
+    h1->setPos(h1XPOS,h1YPOS);
+    heroExists=true;
 
-    h = ui->graphicsView->scene()->addRect(hXPOS,hYPOS,30,30,*Hero.border,*Hero.shapeBrush);
+
     ui->graphicsView->setSceneRect(0,0,1250,1000);
 
-    QTimer* timerMov = new QTimer(this);
-    connect(timerMov,SIGNAL(timeout()),this,SLOT(move()));
-    timerMov->start(1);
+    if(heroExists){
+        QTimer* timerMov = new QTimer(this);
+        connect(timerMov,SIGNAL(timeout()),this,SLOT(move()));
+        timerMov->start(1);
 
-    /*QTimer* timer = new QTimer(this);
+    }
+
+    timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(enemyShoot()));
-    timer->start(5000);*/
 }
 
 sonerit::~sonerit()
@@ -62,7 +63,6 @@ void sonerit::changeScene()
             ui->graphicsView->setScene(scene1);
             activeScene = 1;
         }
-            break;
             break;
         case 1:{
             ui->graphicsView->setScene(scene2);
@@ -93,28 +93,10 @@ void sonerit::changeScene()
 }
 
 void sonerit::move(){
-    h->setPos(hXPOS,hYPOS);
-    if(detectCollision(h)) changeScene();
-    //int i=0;
-    /*for(auto ene:enemies){
-        ene->setPos(eXPOS,eYPOS+(i*50));
-        if(detectCollision(ene)){
-            if(enemyMovConst>0){
-                int j=0;
-                for(auto enm:enemies){
-                    enm->setPos(eXPOS,549+(i*100));
-                    j++;}
-            }
-            else if(enemyMovConst<0){
-                int j=0;
-                for(auto enm:enemies){
-                    enm->setPos(eXPOS,51+(i*50));
-                    j++;}
-            }
-            enemyMovConst= -(enemyMovConst);
-        }
-        i++;
-    }*/
+    h1->setPos(h1XPOS,h1YPOS);
+    if(secondHeroExists) h2->setPos(h2XPOS,h2YPOS);
+    if(activeScene==1) {
+        enemy1.moveEnemies1(enemies,blocksVector,&enemyMovConst,&eYPOS);}
 
 }
 
@@ -134,12 +116,12 @@ void sonerit::enemyShoot(){
 void sonerit::moveBullet(){
     const int movSpeed = 7;
         for(auto bull:bullets){
-            if(bull->collidesWithItem(h)||detectCollision(bull)||(bull->x())<=(500)){
-                if(bull->collidesWithItem(h)){
+            if(bull->collidesWithItem(h1)||detectCollision(bull)||(bull->x())<=(100)){
+                if(bull->collidesWithItem(h1)){
                     ui->graphicsView->scene()->addRect(bull->x(),bull->y(),10,10,QPen(Qt::red),Qt::red);
                 }
                 ui->graphicsView->scene()->removeItem(bull);
-                if(bull->collidesWithItem(h)||detectCollision(bull)){
+                if(bull->collidesWithItem(h1)||detectCollision(bull)){
                     for (unsigned long long ind=0;ind<bullets.size();ind++){
                         if(bullets.at(ind)==bull){
                             bullets.erase(bullets.cbegin()+ind);
@@ -148,7 +130,7 @@ void sonerit::moveBullet(){
                         }
                     }
                 }
-                if((bull->x())<=(500)){
+                if((bull->x())<=(100)){
                     for (unsigned long long ind=0;ind<bullets.size();ind++){
                         ui->graphicsView->scene()->removeItem(bullets.at(ind));
                     }
@@ -162,34 +144,53 @@ void sonerit::moveBullet(){
 
 void sonerit::keyPressEvent(QKeyEvent *event){
     int movingSpace = 7;
-    if(event->key()==Qt::Key_Space&&(heroBullets.size()==0)) createHeroBullet();
+    //if(event->key()==Qt::Key_Space&&(heroBullets.size()==0)) createHeroBullet();
     switch (event->key()) {
     case Qt::Key_A:{
-        hXPOS-=movingSpace;
-        if(detectCollision(h)){
-            hXPOS+=2*movingSpace;
-        }
+        h1XPOS-=movingSpace;
+        if(detectCollision(h1)) h1XPOS+=2*movingSpace;
     }
         break;
     case Qt::Key_W:{
-        hYPOS-=movingSpace;
-        if(detectCollision(h)) hYPOS+=2*movingSpace;
+        h1YPOS-=movingSpace;
+        if(detectCollision(h1)) h1YPOS+=2*movingSpace;
     }
         break;
     case Qt::Key_D:{
-        hXPOS+=movingSpace;
-        if(detectCollision(h)) hXPOS-=2*movingSpace;
+        h1XPOS+=movingSpace;
+        if(detectCollision(h1)) h1XPOS-=2*movingSpace;
     }
         break;
     case Qt::Key_S:{
-        hYPOS+=movingSpace;
-        //changeScene();
-        if(detectCollision(h)) hYPOS-=2*movingSpace;
+        h1YPOS+=movingSpace;
+        if(detectCollision(h1)) h1YPOS-=2*movingSpace;
 
     }
         break;
+    case Qt::Key_H:{
+        h2XPOS-=movingSpace;
+        if(detectCollision(h2)) h2XPOS+=2*movingSpace;
+    }
+        break;
+    case Qt::Key_U:{
+        h2YPOS-=movingSpace;
+        if(detectCollision(h2)) h2YPOS+=2*movingSpace;
+    }
+        break;
+    case Qt::Key_K:{
+        h2XPOS+=movingSpace;
+        if(detectCollision(h2)) h2XPOS-=2*movingSpace;
+    }
+        break;
     case Qt::Key_J:{
+        h2YPOS+=movingSpace;
+        if(detectCollision(h2)) h2YPOS-=2*movingSpace;
+
+    }
+        break;
+    case Qt::Key_X:{
         changeScene();
+
     }
         break;
     }
@@ -215,15 +216,29 @@ bool sonerit::bullCollToEnm(){
 
 void sonerit::on_pushButton_clicked()
 {
+    changeScene();
+
+    hero Hero(500,20,7,HERO);
+    h1 = ui->graphicsView->scene()->addRect(0,0,30,30,*Hero.border,*Hero.shapeBrush);
+    h1->setPos(h1XPOS,h1YPOS);
+    heroExists=true;
+    if(ui->checkBox->checkState()==Qt::Checked){
+        hero Hero2(500,20,7,HERO);
+        QGraphicsItem* h2 = ui->graphicsView->scene()->addRect(0,0,30,30,QPen(Qt::yellow),*Hero2.shapeBrush);
+        h2->setPos(h2XPOS,h2YPOS);
+        secondHeroExists = true;
+    }
+    timer->start(5000);
+
     ui->continue_button->~QPushButton();
     ui->pushButton->~QPushButton();
     ui->label->~QLabel();
-    ui->graphicsView->setScene(scene1);
+    ui->checkBox->~QCheckBox();
 }
 
-void sonerit::createHeroBullet()
+void sonerit::createHeroBullet(QGraphicsItem* hr)
 {
-    qreal x=h->x(), y=h->y()+15;
+    qreal x=hr->x(), y=hr->y()+15;
     QGraphicsItem* temp = ui->graphicsView->scene()->addEllipse(0,0,10,10,QPen(Qt::transparent),Qt::yellow);
     temp->setPos(x,y);
     heroBullets.push_front(temp);
