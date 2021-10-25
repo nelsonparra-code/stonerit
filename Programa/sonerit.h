@@ -29,7 +29,7 @@ public:
     void changeScene();
     bool detectCollision(QGraphicsItem*);
     bool bullCollToEnm();
-    bool heroExists=false, secondHeroExists=false;
+    bool secondHeroExists=false;
 protected slots:
     void move();
     void enemyShoot();
@@ -43,7 +43,7 @@ protected:
     QGraphicsScene* scene4;
     QGraphicsScene* scene5;
     QGraphicsScene* end;
-    std::vector<QGraphicsScene*> scenes{start,scene1,scene2,scene3,scene4,scene5,end};
+    //std::vector<QGraphicsScene*> scenes{start,scene1,scene2,scene3,scene4,scene5,end};
 
     void keyPressEvent(QKeyEvent *event);
 private slots:
@@ -65,7 +65,6 @@ private:
 
     QGraphicsItem* h1;
     QGraphicsItem* h2;
-    QGraphicsItem* heros[2] = {h1,h2};
     QGraphicsItem* e;
     std::vector<QGraphicsRectItem*> enemies;
     std::vector<QGraphicsRectItem*> enemies2;
@@ -81,15 +80,13 @@ private:
     int activeScene;
     std::vector<QGraphicsRectItem*> activeBlocks;
     std::vector<QGraphicsRectItem*> blocksVector;
-    std::vector<QGraphicsRectItem*> blocksVector2;
+    std::vector<QGraphicsRectItem*> blocksVectorChief;
     std::vector<QGraphicsRectItem*> blocksVector3;
-    std::vector<QGraphicsRectItem*> blocksVector4;
-    std::vector<QGraphicsRectItem*> blocksVector5;
-    std::vector<QGraphicsRectItem*> allBlocksVector[5] = {blocksVector,blocksVector2,blocksVector3,blocksVector4,blocksVector5};
+    //std::vector<QGraphicsRectItem*> allBlocksVector[5] = {blocksVector,blocksVector2,blocksVector3,blocksVector4,blocksVector5};
 
-    enemy enemy1 = enemy(100,20,7);
-    enemy enemy2 = enemy(200,30,5);
-    enemy enemy3 = enemy(125,25,9);
+    enemy enemy1 = enemy(100,20,0.0,7.0);
+    enemy enemy2 = enemy(200,30,-62.64184,31.32096);
+    enemy enemy3 = enemy(125,25,0.0,10.0);
     enemy enemy4 = enemy(200,40,9);
     enemy enemy5 = enemy(300,50,11);
 

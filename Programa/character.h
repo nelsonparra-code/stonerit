@@ -8,6 +8,7 @@ class character
 {
 public:
     character();
+    int size;
     int health;
     /*classtype*/ int power;
     int powerDamage;

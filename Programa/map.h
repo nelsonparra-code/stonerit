@@ -12,10 +12,12 @@
 class map
 {
 public:
-    map(std::string,QGraphicsScene*,std::vector<QGraphicsRectItem*>*,std::vector<QGraphicsRectItem*>*);
+    map(std::string,QGraphicsScene*,std::vector<QGraphicsRectItem*>*,std::vector<QGraphicsRectItem*>*,int);
 
     std::vector<std::vector<int> > getValue() const;
     int blockSize = 50;
+
+    QBrush bullet;
 
 private:
     std::vector<std::vector<int>> value;

@@ -1,6 +1,7 @@
 #include "map.h"
 
-map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v, std::vector<QGraphicsRectItem*>* e)
+map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v,
+         std::vector<QGraphicsRectItem*>* e, int enemySize)
 {
     QString qstrT = QString::fromStdString(t);
     std::vector<int> auxVctr {};
@@ -24,8 +25,9 @@ map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v, s
     inFile.close();
 
     QString qstr = QString::fromStdString(t+"e.png");
-    enemy Enemy(qstr);
+    enemy Enemy(qstr,enemySize);
 
+    v->clear();
     int y=0;
     for(unsigned long long row=0;row<value.size();row++){
         int x=0;
@@ -36,12 +38,12 @@ map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v, s
                 v->push_back(temp);
             }
             else if(value.at(row).at(column)==2){
-                QGraphicsRectItem* temp = s->addRect(0,0,blockSize,blockSize,QPen(Qt::black),bBlockBrush);
+                QGraphicsRectItem* temp = s->addRect(0,0,blockSize,blockSize,QPen(Qt::transparent),bBlockBrush);
                 temp->setPos(x,y);
                 v->push_back(temp);
             }
             else if(value.at(row).at(column)==3){
-                QGraphicsRectItem* temp = s->addRect(0,0,30,30,*Enemy.border,*Enemy.shapeBrush);
+                QGraphicsRectItem* temp = s->addRect(0,0,enemySize,enemySize,QPen(Qt::transparent),*Enemy.shapeBrush);
                 temp->setPos(x,y);
                 e->push_back(temp);
             }
@@ -49,6 +51,8 @@ map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v, s
         }
         y+=blockSize;
     }
+
+    bullet = QBrush();
 }
 
 std::vector<std::vector<int> > map::getValue() const

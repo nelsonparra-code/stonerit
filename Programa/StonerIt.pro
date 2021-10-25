@@ -21,6 +21,7 @@ HEADERS += \
     enemy.h \
     hero.h \
     map.h \
+    movement.h \
     sonerit.h
 
 FORMS += \
