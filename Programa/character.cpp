@@ -1,6 +1,11 @@
 #include "character.h"
 
-character::character()
+int character::getHealth()
 {
+    return health;
+}
 
+int character::getDamage()
+{
+    return powerDamage;
 }

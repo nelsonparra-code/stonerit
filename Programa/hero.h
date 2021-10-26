@@ -6,17 +6,11 @@
 #include <QObject>
 #include <QPen>
 
-class hero : public character/*, public QObject*/
+class hero : public character
 {
     //Q_OBJECT
 public:
-    explicit hero(int,int,int,std::string/*QObject *parent = nullptr*/);
-    QPen* border;
-    //QBrush shapeBrush(*charImg);
-    QBrush* shapeBrush;
-
-signals:
-
+    explicit hero(int,int,int);
 };
 
 #endif // HERO_H

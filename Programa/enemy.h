@@ -20,8 +20,8 @@ public:
     void moveEnemies1(std::vector<QGraphicsRectItem*>,std::vector<QGraphicsRectItem*>,int*,qreal*);
     void moveEnemie2(std::vector<QGraphicsRectItem*>);
     void moveEnemies3(std::vector<QGraphicsRectItem*>);
-    void moveEnemie4();
-    void moveEnemie5();
+    void moveEnemie4(std::vector<QGraphicsRectItem*>);
+    void moveEnemie5(std::vector<QGraphicsRectItem*>);
     bool detectCollision(QGraphicsItem*,std::vector<QGraphicsRectItem*>);
 
 signals:

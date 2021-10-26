@@ -14,7 +14,8 @@ SOURCES += \
     hero.cpp \
     main.cpp \
     map.cpp \
-    sonerit.cpp
+    sonerit.cpp \
+    sprite.cpp
 
 HEADERS += \
     character.h \
@@ -22,7 +23,8 @@ HEADERS += \
     hero.h \
     map.h \
     movement.h \
-    sonerit.h
+    sonerit.h \
+    sprite.h
 
 FORMS += \
     sonerit.ui
@@ -34,3 +36,9 @@ TRANSLATIONS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    pictures.qrc
+
+DISTFILES += \
+    BD/hSprite.png

@@ -1,4 +1,4 @@
-#define HERO "../StonerIt/BD/"
+
 #define MAP_1 "../StonerIt/BD/map1/"
 #define MAP_2 "../StonerIt/BD/map2/"
 #define MAP_3 "../StonerIt/BD/map3/"
@@ -37,6 +37,15 @@ sonerit::sonerit(QWidget *parent)
     for(auto e:enemies2){
         e->setPos(1100,300);
     }
+    for(auto e:enemies4){
+        e->setPos(1000,500);
+    }
+
+    timerMov = new QTimer(this);
+    connect(timerMov,SIGNAL(timeout()),this,SLOT(move()));
+
+    timerLive = new QTimer(this);
+    connect(timerLive,SIGNAL(timeout()),this,SLOT(checkStatus()));
 
     timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(enemyShoot()));
@@ -52,27 +61,52 @@ void sonerit::changeScene()
     switch (activeScene){
         case 0:{
             ui->graphicsView->setScene(scene1);
+            createHero();
+            enemiesHealth.clear();
+            for(unsigned long long h=0;h<enemies.size();h++){
+                enemiesHealth.push_back(enemy1.getHealth());
+            }
             activeScene = 1;
         }
             break;
         case 1:{
             ui->graphicsView->setScene(scene2);
+            createHero();
             activeScene = 2;
+            enemiesHealth.clear();
+            for(unsigned long long h=0;h<enemies2.size();h++){
+                enemiesHealth.push_back(enemy2.getHealth());
+            }
         }
             break;
         case 2:{
             ui->graphicsView->setScene(scene3);
+            createHero();
             activeScene = 3;
+            enemiesHealth.clear();
+            for(unsigned long long h=0;h<enemies3.size();h++){
+                enemiesHealth.push_back(enemy3.getHealth());
+            }
         }
             break;
         case 3:{
             ui->graphicsView->setScene(scene4);
+            createHero();
             activeScene = 4;
+            enemiesHealth.clear();
+            for(unsigned long long h=0;h<enemies4.size();h++){
+                enemiesHealth.push_back(enemy4.getHealth());
+            }
         }
             break;
         case 4:{
             ui->graphicsView->setScene(scene5);
+            createHero();
             activeScene = 5;
+            enemiesHealth.clear();
+            for(unsigned long long h=0;h<enemies5.size();h++){
+                enemiesHealth.push_back(enemy5.getHealth());
+            }
         }
             break;
         case 5:{
@@ -85,22 +119,21 @@ void sonerit::changeScene()
 
 void sonerit::move(){
     h1->setPos(h1XPOS,h1YPOS);
-    if(secondHeroExists) h2->setPos(h2XPOS,h2YPOS);
+    heroS->setPos(h1XPOS,h1YPOS);
+    if(secondHeroExists){
+        h2->setPos(h2XPOS,h2YPOS);
+        heroS2->setPos(h2XPOS,h2YPOS);
+    }
     if(activeScene==1) enemy1.moveEnemies1(enemies,blocksVector,&enemyMovConst,&eYPOS);
-    if(activeScene==2){
-        enemy2.moveEnemie2(enemies2);
-    }
-    if(activeScene==3){
-        enemy3.moveEnemies3(enemies3);
-    }
+    if(activeScene==2) enemy2.moveEnemie2(enemies2);
+    if(activeScene==3) enemy3.moveEnemies3(enemies3);
+    if(activeScene==4) enemy4.moveEnemie4(enemies4);
 
 }
 
 void sonerit::enemyShoot(){
-    if(activeScene==1) enemy1.moveEnemies1(enemies,blocksVector,&enemyMovConst,&eYPOS);
-    //if(activeScene==2) enemy2.moveEnemie2(enemies2,blocksVector2,&enemyMovConst,&eYPOS);
-    eYPOS+=enemyMovConst;
-    for(auto enm:enemies2){
+    //eYPOS+=enemyMovConst;
+    for(auto enm:enemies){
         QGraphicsItem* temp = ui->graphicsView->scene()->addEllipse(0,0,10,10,QPen(Qt::black),Qt::yellow);
         temp->setPos(enm->x(),enm->y());
         bullets.push_back(temp);
@@ -142,46 +175,55 @@ void sonerit::moveBullet(){
 
 void sonerit::keyPressEvent(QKeyEvent *event){
     int movingSpace = 7;
-    //if(event->key()==Qt::Key_Space&&(heroBullets.size()==0)) createHeroBullet();
+    if(event->key()==Qt::Key_E&&(heroBullets.size()==0)) createHeroBullet(h1);
     switch (event->key()) {
     case Qt::Key_A:{
         h1XPOS-=movingSpace;
+        heroS->changeDirection(210);
         if(detectCollision(h1)) h1XPOS+=2*movingSpace;
     }
         break;
     case Qt::Key_W:{
         h1YPOS-=movingSpace;
+        heroS->changeDirection(140);
         if(detectCollision(h1)) h1YPOS+=2*movingSpace;
     }
         break;
     case Qt::Key_D:{
         h1XPOS+=movingSpace;
+        heroS->changeDirection(70);
         if(detectCollision(h1)) h1XPOS-=2*movingSpace;
+
     }
         break;
     case Qt::Key_S:{
         h1YPOS+=movingSpace;
+        heroS->changeDirection(0);
         if(detectCollision(h1)) h1YPOS-=2*movingSpace;
 
     }
         break;
     case Qt::Key_H:{
         h2XPOS-=movingSpace;
+        heroS2->changeDirection(210);
         if(detectCollision(h2)) h2XPOS+=2*movingSpace;
     }
         break;
     case Qt::Key_U:{
         h2YPOS-=movingSpace;
+        heroS2->changeDirection(140);
         if(detectCollision(h2)) h2YPOS+=2*movingSpace;
     }
         break;
     case Qt::Key_K:{
         h2XPOS+=movingSpace;
+        heroS2->changeDirection(70);
         if(detectCollision(h2)) h2XPOS-=2*movingSpace;
     }
         break;
     case Qt::Key_J:{
         h2YPOS+=movingSpace;
+        heroS2->changeDirection(0);
         if(detectCollision(h2)) h2YPOS-=2*movingSpace;
 
     }
@@ -210,7 +252,7 @@ bool sonerit::detectCollision(QGraphicsItem* object){
         }
     }
     else if(activeScene==3){
-        for(auto block:blocksVector){
+        for(auto block:blocksVector3){
             if(object->collidesWithItem(block)){
                 return true;
             }
@@ -220,9 +262,57 @@ bool sonerit::detectCollision(QGraphicsItem* object){
 }
 
 bool sonerit::bullCollToEnm(){
+    int i=0;
     for(auto bull:heroBullets){
-        for(auto enm:enemies){
-            if(bull->collidesWithItem(enm)) return true;
+        if(activeScene==1){
+            for(auto enm:enemies){
+                if(bull->collidesWithItem(enm)){
+                    enemiesHealth[i] -= Hero.getDamage();
+                    std::cout<<enemiesHealth[i]<<std::endl;
+                    return true;
+                }
+                i++;
+            }
+        }
+        else if(activeScene==2){
+            for(auto enm:enemies2){
+                if(bull->collidesWithItem(enm)){
+                    enemiesHealth[i] -= Hero.getDamage();
+                    std::cout<<enemiesHealth[i]<<std::endl;
+                    return true;
+                }
+                i++;
+            }
+        }
+        else if(activeScene==3){
+            for(auto enm:enemies3){
+                if(bull->collidesWithItem(enm)){
+                    enemiesHealth[i] -= Hero.getDamage();
+                    std::cout<<enemiesHealth[i]<<std::endl;
+                    return true;
+                }
+                i++;
+            }
+        }
+        else if(activeScene==4){
+            for(auto enm:enemies4){
+                if(bull->collidesWithItem(enm)){
+                    enemiesHealth[i] -= Hero.getDamage();
+                    std::cout<<enemiesHealth[i]<<std::endl;
+                    return true;
+                }
+                i++;
+            }
+        }
+        else{
+            for(auto enm:enemies5){
+                if(bull->collidesWithItem(enm)){
+                    enemiesHealth[i] -= Hero.getDamage();
+                    std::cout<<enemiesHealth[i]<<std::endl;
+                    return true;
+                }
+                i++;
+            }
         }
     }
     return false;
@@ -230,22 +320,12 @@ bool sonerit::bullCollToEnm(){
 
 void sonerit::on_pushButton_clicked()
 {
-    activeScene=2;
+    if(ui->checkBox->checkState()==Qt::Checked) secondHeroExists = true;
     changeScene();
 
-    hero Hero(500,20,7,HERO);
-    h1 = ui->graphicsView->scene()->addRect(0,0,30,30,*Hero.border,*Hero.shapeBrush);
-    h1->setPos(h1XPOS,h1YPOS);
-    QTimer* timerMov = new QTimer(this);
-    connect(timerMov,SIGNAL(timeout()),this,SLOT(move()));
     timerMov->start(10);
-    if(ui->checkBox->checkState()==Qt::Checked){
-        hero Hero2(500,20,7,HERO);
-        h2 = ui->graphicsView->scene()->addRect(0,0,30,30,QPen(Qt::yellow),*Hero2.shapeBrush);
-        h2->setPos(h2XPOS,h2YPOS);
-        secondHeroExists = true;
-    }
-    //timer->start(5000);
+    timerLive->start(15);
+    timer->start(5000);
 
     ui->continue_button->~QPushButton();
     ui->pushButton->~QPushButton();
@@ -255,6 +335,8 @@ void sonerit::on_pushButton_clicked()
 
 void sonerit::createHeroBullet(QGraphicsItem* hr)
 {
+    timerMov->stop();
+    timerMov->start(10);
     qreal x=hr->x(), y=hr->y()+15;
     QGraphicsItem* temp = ui->graphicsView->scene()->addEllipse(0,0,10,10,QPen(Qt::transparent),Qt::yellow);
     temp->setPos(x,y);
@@ -267,7 +349,7 @@ void sonerit::createHeroBullet(QGraphicsItem* hr)
 
 void sonerit::moveHeroBullets()
 {
-    const int movSpeed = 7;
+    const int movSpeed = 15;
         for(auto bull:heroBullets){
             if(bullCollToEnm()||detectCollision(bull)||(bull->x())>=(1100)){
                 if(bullCollToEnm()){
@@ -280,6 +362,7 @@ void sonerit::moveHeroBullets()
                             if(*itr==bull){
                                 it=itr;
                                 heroBullets.erase(it);
+                                timerHB->stop();
                                 break;
                             }
                      }
@@ -298,4 +381,25 @@ void sonerit::on_continue_button_clicked()
 
 }
 
+void sonerit::createHero(){
+    h1XPOS=h1XPOS_O, h1YPOS=h1YPOS_O,h2XPOS=h2XPOS_O, h2YPOS=h2YPOS_O;
+    h1 = ui->graphicsView->scene()->addRect(0,0,70,70,QPen(Qt::black),Qt::transparent);
+    h1->setPos(h1XPOS,h1YPOS);
+    heroS = new sprite();
+    ui->graphicsView->scene()->addItem(heroS);
+    heroS->setPos(h1XPOS,h1YPOS);
+    if(secondHeroExists){
+        h2 = ui->graphicsView->scene()->addRect(0,0,70,70,QPen(Qt::red),Qt::transparent);
+        h2->setPos(h2XPOS,h2YPOS);
+        heroS2 = new sprite();
+        ui->graphicsView->scene()->addItem(heroS2);
+        heroS2->setPos(h2XPOS,h2YPOS);
+    }
+}
 
+void sonerit::checkStatus(){
+    for(unsigned long long x=0;x<enemiesHealth.size();x++){
+        if(enemiesHealth[x]>0) break;
+        if(x==(enemiesHealth.size()-1)) changeScene();
+    }
+}

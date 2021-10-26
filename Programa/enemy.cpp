@@ -116,14 +116,36 @@ void enemy::moveEnemies3(std::vector<QGraphicsRectItem*> enems)
     }*/
 }
 
-void enemy::moveEnemie4()
+void enemy::moveEnemie4(std::vector<QGraphicsRectItem*> enems)
 {
+    for(auto enm:enems){
 
+        float t=0.1;
+        /*float px=enm->x(),py=enm->y();
+        float ax = a*cos(atan2(500-py,900-px)),
+                ay = a*sin(atan2(500-py,900-px));
+        py += (vy*t)+(ay*t*t)/2.0;
+        px += (vx*t)+(ax*t*t)/2.0;
+        vx += ax*t;
+        vy += ay*t;
+        enm->setPos(px,py);
+        */
+        float y = enm->y()+(vy*t);
+        enm->setPos(enm->x(),y);
+        if(y>=695){
+            vy=-vy;
+        }
+        else if(y<=55){
+            vy=-vy;
+        }
+    }
 }
 
-void enemy::moveEnemie5()
+void enemy::moveEnemie5(std::vector<QGraphicsRectItem*> enems)
 {
+    for(auto enm:enems){
 
+    }
 }
 
 bool enemy::detectCollision(QGraphicsItem* object, std::vector<QGraphicsRectItem*> bVector){

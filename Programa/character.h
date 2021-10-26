@@ -7,7 +7,8 @@
 class character
 {
 public:
-    character();
+    int getHealth();
+    int getDamage();
     int size;
     int health;
     /*classtype*/ int power;
