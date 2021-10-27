@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1258</width>
-    <height>1057</height>
+    <height>1043</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,7 +18,7 @@
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>0</y>
+      <y>30</y>
       <width>1260</width>
       <height>1010</height>
      </rect>
@@ -27,37 +27,34 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>590</y>
+      <x>110</x>
+      <y>800</y>
       <width>211</width>
       <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>START</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>450</x>
-      <y>260</y>
-      <width>181</width>
-      <height>121</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>STONERIT</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="continue_button">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>780</y>
+      <x>110</x>
+      <y>920</y>
       <width>211</width>
       <height>51</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>15</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>CONTINUE</string>
@@ -66,28 +63,206 @@
    <widget class="QCheckBox" name="checkBox">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>670</y>
-      <width>70</width>
-      <height>17</height>
+      <x>120</x>
+      <y>860</y>
+      <width>91</width>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
     </property>
     <property name="text">
      <string>2 Player</string>
     </property>
    </widget>
+   <widget class="QPlainTextEdit" name="textEdit_player1">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>670</y>
+      <width>211</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="textEdit_player2">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>730</y>
+      <width>211</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>650</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Player 1 Name</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>710</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Player 2 Name</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_player1_name">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>0</y>
+      <width>131</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_player2_name">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>0</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_points">
+    <property name="geometry">
+     <rect>
+      <x>460</x>
+      <y>0</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>POINTS:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_time">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>0</y>
+      <width>121</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>TIME LEFT:</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcd_health1">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>0</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcd_health2">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>0</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcd_points">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>0</y>
+      <width>161</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcd_time">
+    <property name="geometry">
+     <rect>
+      <x>870</x>
+      <y>0</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <zorder>graphicsView</zorder>
+   <zorder>pushButton</zorder>
+   <zorder>continue_button</zorder>
+   <zorder>checkBox</zorder>
+   <zorder>textEdit_player1</zorder>
+   <zorder>textEdit_player2</zorder>
+   <zorder>label_3</zorder>
+   <zorder>label_player1_name</zorder>
+   <zorder>label_player2_name</zorder>
+   <zorder>label_points</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_time</zorder>
+   <zorder>lcd_health1</zorder>
+   <zorder>lcd_health2</zorder>
+   <zorder>lcd_points</zorder>
+   <zorder>lcd_time</zorder>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1258</width>
-     <height>21</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

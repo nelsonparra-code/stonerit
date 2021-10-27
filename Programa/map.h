@@ -13,6 +13,7 @@ class map
 {
 public:
     map(std::string,QGraphicsScene*,std::vector<QGraphicsRectItem*>*,std::vector<QGraphicsRectItem*>*,int);
+    map(std::string,QGraphicsScene*,std::vector<QGraphicsRectItem*>*,int);
 
     std::vector<std::vector<int> > getValue() const;
     int blockSize = 50;
