@@ -7,7 +7,7 @@
 #include <QObject>
 #include <QPen>
 
-class enemy : /*public QObject, */public character
+class enemy : public character
 {
     //Q_OBJECT
 public:

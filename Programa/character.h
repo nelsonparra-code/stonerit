@@ -9,15 +9,17 @@ class character
 public:
     int getHealth();
     int getDamage();
+
+    /*classtype*/ int power;
     int size;
     int health;
-    /*classtype*/ int power;
     int powerDamage;
-    int powerDistance;
     int movementSpeed;
 
-    QGraphicsRectItem* shape;
+    int powerDistance;
     QImage charImg;
+private:
+
 };
 
 #endif // CHARACTER_H
