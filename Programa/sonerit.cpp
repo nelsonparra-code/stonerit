@@ -458,6 +458,7 @@ void sonerit::createHero1Bullet()
     temp->setPos(x,y);
     hero1Bullet.push_front(temp);
     timerHB = new QTimer(this);
+    timerHBe=true;
     if(direction1=='d') connect(timerHB,&QTimer::timeout,this,[=](){
         moveHeroBulletsDown(&hero1Bullet);
     });
@@ -482,6 +483,7 @@ void sonerit::createHero2Bullet()
     temp->setPos(x,y);
     hero2Bullet.push_front(temp);
     timer2HB = new QTimer(this);
+    timer2HBe=true;
     if(direction1=='d') connect(timer2HB,&QTimer::timeout,this,[=](){
         moveHeroBulletsDown(&hero2Bullet);
     });
@@ -719,8 +721,8 @@ void sonerit::stopTimers(){
     timerLive->stop();
     timerMov->stop();
     timerM->stop();
-    timerHB->stop();
-    if(secondHeroExists) timer2HB->stop();
+    if(timerHBe) timerHB->stop();
+    if(timer2HBe) timer2HB->stop();
     timerEnemyMov->stop();
     timerTimeLeft->stop();
 }

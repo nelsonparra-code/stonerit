@@ -103,7 +103,7 @@ private:
     qreal h2XPOS_O=70, h2YPOS_O=860, h2XPOS=h2XPOS_O, h2YPOS=h2YPOS_O;
 
 
-    hero Hero = hero(500,25,7,HERO_B);
+    hero Hero = hero(20,25,7,HERO_B);
     QGraphicsItem* h1;
     QGraphicsItem* h2;
 
@@ -139,5 +139,6 @@ private:
     enemy enmArray[5] {enemy1,enemy2,enemy3,enemy4,enemy5};
 
     char direction1 = 'd', direction2 = 'd';
+    bool timerHBe=false,timer2HBe=false;
 };
 #endif // SONERIT_H

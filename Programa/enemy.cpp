@@ -51,7 +51,6 @@ void enemy::moveEnemie2(std::vector<QGraphicsRectItem*> enems)
 {
     for(auto enm:enems){
         float t = 0.1;
-        //movement enemyMov(1100,enm->x(),enm->y(),vxo,vx,vy);
         float y = enm->y()+(vy*t);
         float x = enm->x()+(vx*t)+(9.81*t*t)/2.0;
         vx += 9.81*t;
@@ -59,9 +58,6 @@ void enemy::moveEnemie2(std::vector<QGraphicsRectItem*> enems)
             vx=vxo;
             vy=-vy;
         }
-        /*enemyMov.calcParabPos(0.1);
-        vx = enemyMov.getVx(), vy = enemyMov.getVy();
-        enm->setPos(enemyMov.getPx(),enemyMov.getPy());*/
         enm->setPos(x,y);
     }
 }
@@ -79,35 +75,6 @@ void enemy::moveEnemies3(std::vector<QGraphicsRectItem*> enems)
             vy=-vy;
         }
     }
-    /*for(auto enm:enems){
-        float t = 0.1;
-        movement enemyMov(enm->x(),enm->x(),enm->y(),vxo,vx,vy,a);
-        enemyMov.calcCircPos(0.1);
-        vx = enemyMov.getVx(), vy = enemyMov.getVy();
-        enm->setPos(enemyMov.getPx(),enemyMov.getPy());
-        float x = enm->x(), y = enm->y();
-        float ax = a*cos(atan2(y,x)),
-                ay = a*sin(atan2(y,x));
-        y += (vy*t)+(ay*t*t)/2.0;
-        x += (vx*t)+(ax*t*t)/2.0;
-        vx += ax*t;
-        vy += ay*t;
-        enm->setPos(x,y);*/
-
-    /*ax = a*cos(atan2(py,px));
-    ay = a*sin(atan2(py,px));
-    py += (vy*t)+(ay*t*t)/2.0;
-    px += (vx*t)+(ax*t*t)/2.0;
-
-    vx += ax*t;
-    vy += ay*t;
-
-    v = sqrt((vx*vx)+(vy*vy));
-    if(int(py)==0&&px>0){
-        px=100.0;
-        py=0.0;
-    }
-    }*/
 }
 
 void enemy::moveEnemie4(std::vector<QGraphicsRectItem*> enems)
