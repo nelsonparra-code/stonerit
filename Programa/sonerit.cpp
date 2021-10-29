@@ -8,7 +8,11 @@ sonerit::sonerit(QWidget *parent)
     ui->setupUi(this);
 
     start = new QGraphicsScene(this);
-    start->setBackgroundBrush(Qt::blue);
+    end = new QGraphicsScene(this);
+    QImage imgS(BCKGS), imgE(BCKGE);
+
+    start->setBackgroundBrush(imgS);
+    end->setBackgroundBrush(imgE);
     ui->graphicsView->setScene(start);
     activeScene = 0;
 
@@ -17,9 +21,6 @@ sonerit::sonerit(QWidget *parent)
     scene3 = new QGraphicsScene(this);
     scene4 = new QGraphicsScene(this);
     scene5 = new QGraphicsScene(this);
-
-
-    saveRecord();
 
     std::ifstream inFile;
     inFile.open(DATA);
@@ -64,9 +65,6 @@ sonerit::sonerit(QWidget *parent)
     timerTimeLeft = new QTimer(this);
     connect(timerTimeLeft,SIGNAL(timeout()),this,SLOT(timerCount()));
 
-
-    timer2HB = new QTimer(this);
-
     ui->label_llt->hide();
     ui->lcd_llt->hide();
 }
@@ -78,15 +76,10 @@ sonerit::~sonerit()
 
 void sonerit::changeScene()
 {
-    shootingTime-=1000;
-    timerTimeLeft->stop();
-    points+=timeLeft;
-    timeLeft=oTime;
-    timerTimeLeft->start(1000);
-    timer->stop();
-    timer->start(shootingTime);
+
     switch (activeScene){
         case 0:{
+            shootingTime=5000;
             mapa map1 = mapa(MAP_1,scene1,&blocksVector,&enemies,70);
             saveGame();
             ui->graphicsView->setScene(scene1);
@@ -102,6 +95,7 @@ void sonerit::changeScene()
         }
             break;
         case 1:{
+            shootingTime=4000;
             blocksVector.~vector();
             mapa map2 = mapa(MAP_2,scene2,&blocksVectorChief,&enemies2,100);
             saveGame();
@@ -118,6 +112,7 @@ void sonerit::changeScene()
         }
             break;
         case 2:{
+            shootingTime=3000;
             mapa map3 = mapa(MAP_3,scene3,&blocksVector3,&enemies3,70);
             saveGame();
             ui->graphicsView->setScene(scene3);
@@ -132,7 +127,8 @@ void sonerit::changeScene()
         }
             break;
         case 3:{
-        blocksVector3.~vector();
+            blocksVector3.~vector();
+            shootingTime=2000;
             mapa map4 = mapa(MAP_4,scene4,&enemies4,150);
             saveGame();
             ui->graphicsView->setScene(scene4);
@@ -148,6 +144,7 @@ void sonerit::changeScene()
         }
             break;
         case 4:{
+            shootingTime=1000;
             mapa map5 = mapa(MAP_5,scene5,&enemies5,200);
             ui->label_llt->show();
             ui->lcd_llt->show();
@@ -165,11 +162,21 @@ void sonerit::changeScene()
         }
             break;
         case 5:{
+            std::ofstream of;
+            of.open(DATA);
+            of.close();
             ui->graphicsView->setScene(end);
             activeScene = 6;
+            stopTimers();
         }
             break;
     }
+    timerTimeLeft->stop();
+    points+=timeLeft;
+    timeLeft=oTime;
+    timerTimeLeft->start(1000);
+    timer->stop();
+    timer->start(shootingTime);
 }
 
 void sonerit::move(){
@@ -352,7 +359,7 @@ bool sonerit::detectCollision(QGraphicsItem* object){
     return false;
 }
 
-bool sonerit::detectBulletCollision(std::list<QGraphicsItem*>* ls){
+bool sonerit::detectBulletCollision(std::list<QGraphicsRectItem*>* ls){
     for(auto bu:*ls){
         if(activeScene==1){
             for(auto block:blocksVector){
@@ -379,7 +386,7 @@ bool sonerit::detectBulletCollision(std::list<QGraphicsItem*>* ls){
     return false;
 }
 
-bool sonerit::bullCollToEnm(std::list<QGraphicsItem*> ls){
+bool sonerit::bullCollToEnm(std::list<QGraphicsRectItem*> ls){
     int i=0;
     for(auto bull:ls){
         for(auto enm:activeEnemies){
@@ -415,6 +422,7 @@ void sonerit::on_pushButton_clicked()
         points = stoi(gameInfo.at(3));
         saveRecord();
     }
+
     ui->label_player1_name->setText(ui->textEdit_player1->toPlainText()+" Health:");
     playerName1 = ui->textEdit_player1->toPlainText().toLocal8Bit().constData();
     heroHealth1 = Hero.getHealth();
@@ -424,6 +432,8 @@ void sonerit::on_pushButton_clicked()
         playerName2 = ui->textEdit_player2->toPlainText().toLocal8Bit().constData();
         heroHealth2 = Hero.getHealth();
     }
+    activeScene=0;
+    points=0;
 
     changeScene();
 
@@ -444,7 +454,7 @@ void sonerit::createHero1Bullet()
     timerMov->stop();
     timerMov->start(10);
     qreal x=h1->x()+15, y=h1->y()+15;
-    QGraphicsItem* temp = ui->graphicsView->scene()->addRect(0,0,30,30,QPen(Qt::transparent),Hero.getBrush());
+    QGraphicsRectItem* temp = ui->graphicsView->scene()->addRect(0,0,30,30,QPen(Qt::transparent),Hero.getBrush());
     temp->setPos(x,y);
     hero1Bullet.push_front(temp);
     timerHB = new QTimer(this);
@@ -468,10 +478,10 @@ void sonerit::createHero2Bullet()
     timerMov->stop();
     timerMov->start(10);
     qreal x=h2->x()+15, y=h2->y()+15;
-    QGraphicsItem* temp = ui->graphicsView->scene()->addRect(0,0,30,30,QPen(Qt::transparent),Hero.getBrush());
+    QGraphicsRectItem* temp = ui->graphicsView->scene()->addRect(0,0,30,30,QPen(Qt::transparent),Hero.getBrush());
     temp->setPos(x,y);
     hero2Bullet.push_front(temp);
-
+    timer2HB = new QTimer(this);
     if(direction1=='d') connect(timer2HB,&QTimer::timeout,this,[=](){
         moveHeroBulletsDown(&hero2Bullet);
     });
@@ -487,73 +497,69 @@ void sonerit::createHero2Bullet()
     timer2HB->start(50);
 }
 
-void sonerit::moveHeroBulletsRight(std::list<QGraphicsItem*>* ls)
+void sonerit::moveHeroBulletsRight(std::list<QGraphicsRectItem*>* ls)
 {
     const int movSpeed = 15;
         for(auto bull:*ls){
-            if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
-                if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
-                    ls->erase(ls->begin());
-                    if(ls==&hero1Bullet)
-                        timerHB->stop();
-                    else if(ls==&hero2Bullet)
-                        timer2HB->stop();
-                }
+            if(bullCollToEnm(*ls)||detectBulletCollision(ls)||bull->x()>=1200){
+                ls->erase(ls->begin());
+                if(ls==&hero1Bullet)
+                    timerHB->stop();
+                else if(ls==&hero2Bullet)
+                    timer2HB->stop();
                 ui->graphicsView->scene()->removeItem(bull);
+                break;
             }
             else bull->setPos(bull->x()+movSpeed,bull->y());
         }
 }
 
-void sonerit::moveHeroBulletsLeft(std::list<QGraphicsItem*>* ls)
+void sonerit::moveHeroBulletsLeft(std::list<QGraphicsRectItem*>* ls)
 {
     const int movSpeed = 15;
         for(auto bull:*ls){
-            if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
-                if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
-                    ls->erase(ls->begin());
-                    if(ls==&hero1Bullet)
-                        timerHB->stop();
-                    else if(ls==&hero2Bullet)
-                        timer2HB->stop();
-                }
+            if(bullCollToEnm(*ls)||detectBulletCollision(ls)||bull->x()<=50){
+                ls->erase(ls->begin());
+                if(ls==&hero1Bullet)
+                    timerHB->stop();
+                else if(ls==&hero2Bullet)
+                    timer2HB->stop();
                 ui->graphicsView->scene()->removeItem(bull);
+                break;
             }
             else bull->setPos(bull->x()-movSpeed,bull->y());
         }
 }
 
-void sonerit::moveHeroBulletsUp(std::list<QGraphicsItem*>* ls)
+void sonerit::moveHeroBulletsUp(std::list<QGraphicsRectItem*>* ls)
 {
     const int movSpeed = 15;
         for(auto bull:*ls){
-            if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
-                if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
-                    ls->erase(ls->begin());
-                    if(ls==&hero1Bullet)
-                        timerHB->stop();
-                    else if(ls==&hero2Bullet)
-                        timer2HB->stop();
-                }
+            if(bullCollToEnm(*ls)||detectBulletCollision(ls)||bull->y()<=50){
+                ls->erase(ls->begin());
+                if(ls==&hero1Bullet)
+                    timerHB->stop();
+                else if(ls==&hero2Bullet)
+                    timer2HB->stop();
                 ui->graphicsView->scene()->removeItem(bull);
+                break;
             }
             else bull->setPos(bull->x(),bull->y()-movSpeed);
         }
 }
 
-void sonerit::moveHeroBulletsDown(std::list<QGraphicsItem*>* ls)
+void sonerit::moveHeroBulletsDown(std::list<QGraphicsRectItem*>* ls)
 {
     const int movSpeed = 15;
         for(auto bull:*ls){
-            if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
-                if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
-                    ls->erase(ls->begin());
-                    if(ls==&hero1Bullet)
-                        timerHB->stop();
-                    else if(ls==&hero2Bullet)
-                        timer2HB->stop();
-                }
+            if(bullCollToEnm(*ls)||detectBulletCollision(ls)||bull->y()>=950){
+                ls->erase(ls->begin());
+                if(ls==&hero1Bullet)
+                    timerHB->stop();
+                else if(ls==&hero2Bullet)
+                    timer2HB->stop();
                 ui->graphicsView->scene()->removeItem(bull);
+                break;
             }
             else bull->setPos(bull->x(),bull->y()+movSpeed);
         }
@@ -629,6 +635,8 @@ void sonerit::loadGame()
     if(gameInfo.size()==6){
         playerName1 = gameInfo.at(0);
         playerName2 = gameInfo.at(1);
+        ui->label_player1_name->setText(QString::fromStdString(playerName1)+" Health:");
+        ui->label_player1_name->setText(QString::fromStdString(playerName2)+" Health:");
         activeScene = stoi(gameInfo.at(2));
         heroHealth1 = stoi(gameInfo.at(3));
         heroHealth2 = stoi(gameInfo.at(4));
@@ -692,6 +700,7 @@ void sonerit::saveRecord()
         else{
             outFile << recordInfo.at(g-1) << std::endl;
         }
+        if(g==recordInfo.size()) outFile << "!";
     }
     outFile.close();
 }
@@ -711,7 +720,7 @@ void sonerit::stopTimers(){
     timerMov->stop();
     timerM->stop();
     timerHB->stop();
-    timer2HB->stop();
+    if(secondHeroExists) timer2HB->stop();
     timerEnemyMov->stop();
     timerTimeLeft->stop();
 }

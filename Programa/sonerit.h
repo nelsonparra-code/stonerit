@@ -3,6 +3,8 @@
 
 #define DATA "../StonerIt/BD/data.txt"
 #define RCRD "../StonerIt/BD/record.txt"
+#define BCKGS "../StonerIt/BD/start.png"
+#define BCKGE "../StonerIt/BD/end.png"
 #define MAP_1 "../StonerIt/BD/map1/"
 #define MAP_2 "../StonerIt/BD/map2/"
 #define MAP_3 "../StonerIt/BD/map3/"
@@ -44,8 +46,8 @@ public:
 
     void changeScene();
     bool detectCollision(QGraphicsItem*);
-    bool detectBulletCollision(std::list<QGraphicsItem*>*);
-    bool bullCollToEnm(std::list<QGraphicsItem*>);
+    bool detectBulletCollision(std::list<QGraphicsRectItem*>*);
+    bool bullCollToEnm(std::list<QGraphicsRectItem*>);
     bool secondHeroExists=false;
 protected:
     QGraphicsScene* start;
@@ -69,10 +71,10 @@ private slots:
     void moveEnemies();
     void timerCount();
     void on_continue_button_clicked();
-    void moveHeroBulletsRight(std::list<QGraphicsItem*>*);
-    void moveHeroBulletsLeft(std::list<QGraphicsItem*>*);
-    void moveHeroBulletsUp(std::list<QGraphicsItem*>*);
-    void moveHeroBulletsDown(std::list<QGraphicsItem*>*);
+    void moveHeroBulletsRight(std::list<QGraphicsRectItem*>*);
+    void moveHeroBulletsLeft(std::list<QGraphicsRectItem*>*);
+    void moveHeroBulletsUp(std::list<QGraphicsRectItem*>*);
+    void moveHeroBulletsDown(std::list<QGraphicsRectItem*>*);
     void on_pushButton_clicked();
     void checkStatus();
     void checkScndPly();
@@ -101,7 +103,7 @@ private:
     qreal h2XPOS_O=70, h2YPOS_O=860, h2XPOS=h2XPOS_O, h2YPOS=h2YPOS_O;
 
 
-    hero Hero = hero(500,20,7,HERO_B);
+    hero Hero = hero(500,25,7,HERO_B);
     QGraphicsItem* h1;
     QGraphicsItem* h2;
 
@@ -115,8 +117,8 @@ private:
     std::vector<QGraphicsRectItem*> enemies5;
 
     std::vector<QGraphicsItem*> bullets;
-    std::list<QGraphicsItem*> hero1Bullet;
-    std::list<QGraphicsItem*> hero2Bullet;
+    std::list<QGraphicsRectItem*> hero1Bullet;
+    std::list<QGraphicsRectItem*> hero2Bullet;
     void createHero1Bullet();
     void createHero2Bullet();
     void createHero();
@@ -129,9 +131,9 @@ private:
     std::vector<QGraphicsRectItem*> blocksVectorChief;
     std::vector<QGraphicsRectItem*> blocksVector3;
 
-    enemy enemy1 = enemy(100,20,0.0,7.0);
+    enemy enemy1 = enemy(50,20,0.0,7.0);
     enemy enemy2 = enemy(200,30,-62.64184,31.32096);
-    enemy enemy3 = enemy(175,25,0.0,10.0);
+    enemy enemy3 = enemy(100,25,0.0,10.0);
     enemy enemy4 = enemy(400,40,0.0,-20.0,4.0);
     enemy enemy5 = enemy(500,50,250.0,200.0);
     enemy enmArray[5] {enemy1,enemy2,enemy3,enemy4,enemy5};
