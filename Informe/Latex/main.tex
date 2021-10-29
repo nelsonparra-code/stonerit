@@ -75,21 +75,27 @@ Para el proyecto final, inicialmente se plantean 5 niveles: dos de los cuales te
 \end{figure}
 
 \newpage
-\subsection{Personaje y poder}
-\par En orden de nivel:
+\subsection{Personaje}
 \begin{figure}[h]
 \includegraphics[width=2.5cm]{imagenes/PERSONAJE.png}
 \centering
 \caption{Personaje.}
 \end{figure}
 
-\subsection{Enemigos y poderes}
+\subsection{Enemigos}
 \par En orden de nivel:
 \begin{figure}[h]
 \includegraphics[width=12cm]{imagenes/villanos.png}
 \centering
 \caption{Enemigos.}
 \end{figure}
+
+\section{Implementación}
+\par Se implementa una modalidad de puntaje que suma cada vez que se le pegue a un enemigo. Además, se cuenta con un temporizador de 60 segundos que, si se gana el nivel antes de ese tiempo, el sobrante se suma al puntaje, y si llega a 0, no pasa nada. Por el contrario, en el ultimo (quinto) nivel, se pondrá un timer de muerte súbita; el cual, si llega a 0, se pierde toda la partida.
+\par En cuanto a los disparos, el personaje dispara tanto para la derecha, como para la izquierda, arriba o abajo. Por el contrario, los enemigos solo disparan a la izquierda.
+\par Se implementaron 3 sistemas físicos, en los niveles 2, 4 y 5: parabólico, circular y elástico, respectivamente.
+\par Cada vez que se empieza una partida, estos datos se guardan en un archivo llamado 'data.txt'. Cada vez que se pasa de nivel, es un checkpoint y se guardan los datos para poder continuar la partida luego. Por otro lado, todas las partidas se guardan en un archivo llamado 'record.txt' una vez no se utilice mas la cuenta. Es decir, cuando se pierde, se pasa el juego o se crea un usuario nuevo que sustituya al perfil previamente creado.
+\par El juego lo pueden jugar una o dos personas. Las teclas para interactuar de la persona 1 son A (moverse izquierda), W (moverse arriba), D (moverse derecha), S (moverse abajo) y E (disparar), y las de la persona 2 son J (moverse izquierda), I (moverse arriba), L (moverse derecha), K (moverse abajo) y U (disparar).
 
 \section{Inconvenientes}
 De primeras, uno de los impedimentos que se me presenta es el hecho de colocar niveles y múltiples escenas a una misma ventana. Sin embargo, sin pensarlo mucho, se plantea que cada vez que una escena termine su función (menú o juego) todos los ítems de la escena se eliminan y se crean unos nuevos con la utilidad siguiente.
