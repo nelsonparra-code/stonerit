@@ -17,7 +17,7 @@ public:
     enemy(QString,int);
     QBrush* shapeBrush;
     QBrush bullet;
-    void moveEnemies1(std::vector<QGraphicsRectItem*>,std::vector<QGraphicsRectItem*>,int*,qreal*);
+    void moveEnemies1(std::vector<QGraphicsRectItem*>);
     void moveEnemie2(std::vector<QGraphicsRectItem*>);
     void moveEnemies3(std::vector<QGraphicsRectItem*>);
     void moveEnemie4(std::vector<QGraphicsRectItem*>);
@@ -26,7 +26,7 @@ public:
 
 signals:
 private:
-    float vxo, vx, vy, a;
+    float vxo, vyo, vx, vy, a;
 
 };
 

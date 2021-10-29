@@ -7,7 +7,7 @@ hero::hero(int _health, int _damage, int _moveSp, QString s)
     movementSpeed = _moveSp;
 
     QImage img(s);
-    brush = QBrush(img.scaled(10,10,Qt::KeepAspectRatio));
+    brush = QBrush(img);
 }
 
 QBrush hero::getBrush() const

@@ -9,19 +9,19 @@
 #include <QGraphicsItem>
 #include "enemy.h"
 
-class map
+class mapa
 {
 public:
-    map(std::string,QGraphicsScene*,std::vector<QGraphicsRectItem*>*,std::vector<QGraphicsRectItem*>*,int);
-    map(std::string,QGraphicsScene*,std::vector<QGraphicsRectItem*>*,int);
+    mapa(std::string,QGraphicsScene*,std::vector<QGraphicsRectItem*>*,std::vector<QGraphicsRectItem*>*,int);
+    mapa(std::string,QGraphicsScene*,std::vector<QGraphicsRectItem*>*,int);
 
-    std::vector<std::vector<int> > getValue() const;
     int blockSize = 50;
 
-    QBrush bullet;
+    QBrush getBrushBullet() const;
 
 private:
     std::vector<std::vector<int>> value;
+    QBrush bullet;
 };
 
 #endif // MAP_H

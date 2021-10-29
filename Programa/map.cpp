@@ -1,12 +1,13 @@
 #include "map.h"
 
-map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v,
+mapa::mapa(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v,
          std::vector<QGraphicsRectItem*>* e, int enemySize)
 {
     QString qstrT = QString::fromStdString(t);
     std::vector<int> auxVctr {};
-    QImage aBlock(qstrT+"a.png"), bBlock(qstrT+"b.png"), bg(qstrT+"bg.png");
+    QImage aBlock(qstrT+"a.png"), bBlock(qstrT+"b.png"), bg(qstrT+"bg.png"), bull(qstrT+"bu.png");
     QBrush aBlockBrush(aBlock),bBlockBrush(bBlock),bgBrush(bg);
+    bullet = QBrush(bull);
     s->setBackgroundBrush(bgBrush);
 
     std::ifstream inFile;
@@ -51,16 +52,15 @@ map::map(std::string t, QGraphicsScene* s, std::vector<QGraphicsRectItem*>* v,
         }
         y+=blockSize;
     }
-
-    bullet = QBrush();
 }
 
-map::map(std::string t, QGraphicsScene* s,std::vector<QGraphicsRectItem*>* e, int enemySize)
+mapa::mapa(std::string t, QGraphicsScene* s,std::vector<QGraphicsRectItem*>* e, int enemySize)
 {
     QString qstrT = QString::fromStdString(t);
     std::vector<int> auxVctr {};
-    QImage aBlock(qstrT+"a.png"), bBlock(qstrT+"b.png"), bg(qstrT+"bg.png");
+    QImage aBlock(qstrT+"a.png"), bBlock(qstrT+"b.png"), bg(qstrT+"bg.png"), bull(qstrT+"bu.png");
     QBrush aBlockBrush(aBlock),bBlockBrush(bBlock),bgBrush(bg);
+    bullet = QBrush(bull);
     s->setBackgroundBrush(bgBrush);
 
     std::ifstream inFile;
@@ -102,11 +102,9 @@ map::map(std::string t, QGraphicsScene* s,std::vector<QGraphicsRectItem*>* e, in
         }
         y+=blockSize;
     }
-
-    bullet = QBrush();
 }
 
-std::vector<std::vector<int> > map::getValue() const
+QBrush mapa::getBrushBullet() const
 {
-    return value;
+    return bullet;
 }

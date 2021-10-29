@@ -241,9 +241,59 @@
      <rect>
       <x>870</x>
       <y>0</y>
-      <width>91</width>
+      <width>81</width>
       <height>31</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_gameover">
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>300</y>
+      <width>841</width>
+      <height>441</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Montserrat</family>
+      <pointsize>80</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="lcd_llt">
+    <property name="geometry">
+     <rect>
+      <x>1150</x>
+      <y>0</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_llt">
+    <property name="geometry">
+     <rect>
+      <x>960</x>
+      <y>0</y>
+      <width>181</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>SUDDEN DEATH TIME:</string>
     </property>
    </widget>
    <zorder>graphicsView</zorder>
@@ -262,6 +312,9 @@
    <zorder>lcd_health2</zorder>
    <zorder>lcd_points</zorder>
    <zorder>lcd_time</zorder>
+   <zorder>label_gameover</zorder>
+   <zorder>lcd_llt</zorder>
+   <zorder>label_llt</zorder>
   </widget>
  </widget>
  <resources/>

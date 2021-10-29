@@ -1,11 +1,3 @@
-
-#define MAP_1 "../StonerIt/BD/map1/"
-#define MAP_2 "../StonerIt/BD/map2/"
-#define MAP_3 "../StonerIt/BD/map3/"
-#define MAP_4 "../StonerIt/BD/map4/"
-#define MAP_5 "../StonerIt/BD/map5/"
-#define DATA "../StonerIt/BD/data.txt"
-
 #include "sonerit.h"
 #include "ui_sonerit.h"
 
@@ -26,6 +18,9 @@ sonerit::sonerit(QWidget *parent)
     scene4 = new QGraphicsScene(this);
     scene5 = new QGraphicsScene(this);
 
+
+    saveRecord();
+
     std::ifstream inFile;
     inFile.open(DATA);
 
@@ -45,20 +40,10 @@ sonerit::sonerit(QWidget *parent)
     if(gameInfo.size()==4 || gameInfo.size()==6) ui->continue_button->setDisabled(false);
     else ui->continue_button->setDisabled(true);
 
-    map map1(MAP_1,scene1,&blocksVector,&enemies,70),
-        map2(MAP_2,scene2,&blocksVectorChief,&enemies2,100),
-        map3(MAP_3,scene3,&blocksVector3,&enemies3,70),
-        map4(MAP_4,scene4,&enemies4,150),
-        map5(MAP_5,scene5,&enemies5,200);
+    ui->lcd_points->display(points);
+    ui->lcd_time->display(timeLeft);
 
     ui->graphicsView->setSceneRect(0,0,1250,1000);
-
-    for(auto e:enemies2){
-        e->setPos(1100,300);
-    }
-    for(auto e:enemies4){
-        e->setPos(1000,500);
-    }
 
     checkStart = new QTimer(this);
     connect(checkStart,SIGNAL(timeout()),this,SLOT(checkScndPly()));
@@ -75,6 +60,15 @@ sonerit::sonerit(QWidget *parent)
 
     timer = new QTimer(this);
     connect(timer,SIGNAL(timeout()),this,SLOT(enemyShoot()));
+
+    timerTimeLeft = new QTimer(this);
+    connect(timerTimeLeft,SIGNAL(timeout()),this,SLOT(timerCount()));
+
+
+    timer2HB = new QTimer(this);
+
+    ui->label_llt->hide();
+    ui->lcd_llt->hide();
 }
 
 sonerit::~sonerit()
@@ -84,8 +78,16 @@ sonerit::~sonerit()
 
 void sonerit::changeScene()
 {
+    shootingTime-=1000;
+    timerTimeLeft->stop();
+    points+=timeLeft;
+    timeLeft=oTime;
+    timerTimeLeft->start(1000);
+    timer->stop();
+    timer->start(shootingTime);
     switch (activeScene){
         case 0:{
+            mapa map1 = mapa(MAP_1,scene1,&blocksVector,&enemies,70);
             saveGame();
             ui->graphicsView->setScene(scene1);
             createHero();
@@ -95,25 +97,33 @@ void sonerit::changeScene()
                 enemiesHealth.push_back(enemy1.getHealth());
             }
             activeScene = 1;
+            activeBrushBullet = map1.getBrushBullet();
+
         }
             break;
         case 1:{
+            blocksVector.~vector();
+            mapa map2 = mapa(MAP_2,scene2,&blocksVectorChief,&enemies2,100);
             saveGame();
             ui->graphicsView->setScene(scene2);
             createHero();
             activeEnemies = enemies2;
+            activeBrushBullet = map2.getBrushBullet();
             activeScene = 2;
             enemiesHealth.clear();
             for(unsigned long long h=0;h<enemies2.size();h++){
                 enemiesHealth.push_back(enemy2.getHealth());
+                enemies2.at(h)->setPos(1100,300);
             }
         }
             break;
         case 2:{
+            mapa map3 = mapa(MAP_3,scene3,&blocksVector3,&enemies3,70);
             saveGame();
             ui->graphicsView->setScene(scene3);
             createHero();
             activeEnemies = enemies3;
+            activeBrushBullet = map3.getBrushBullet();
             activeScene = 3;
             enemiesHealth.clear();
             for(unsigned long long h=0;h<enemies3.size();h++){
@@ -122,26 +132,35 @@ void sonerit::changeScene()
         }
             break;
         case 3:{
+        blocksVector3.~vector();
+            mapa map4 = mapa(MAP_4,scene4,&enemies4,150);
             saveGame();
             ui->graphicsView->setScene(scene4);
             createHero();
             activeEnemies = enemies4;
+            activeBrushBullet = map4.getBrushBullet();
             activeScene = 4;
             enemiesHealth.clear();
             for(unsigned long long h=0;h<enemies4.size();h++){
                 enemiesHealth.push_back(enemy4.getHealth());
+                enemies4.at(h)->setPos(1000,500);
             }
         }
             break;
         case 4:{
+            mapa map5 = mapa(MAP_5,scene5,&enemies5,200);
+            ui->label_llt->show();
+            ui->lcd_llt->show();
             saveGame();
             ui->graphicsView->setScene(scene5);
             createHero();
             activeEnemies = enemies5;
+            activeBrushBullet = map5.getBrushBullet();
             activeScene = 5;
             enemiesHealth.clear();
             for(unsigned long long h=0;h<enemies5.size();h++){
                 enemiesHealth.push_back(enemy5.getHealth());
+                enemies5.at(h)->setPos(800,375);
             }
         }
             break;
@@ -164,7 +183,7 @@ void sonerit::move(){
 }
 
 void sonerit::moveEnemies(){
-    if(activeScene==1) enemy1.moveEnemies1(enemies,blocksVector,&enemyMovConst,&eYPOS);
+    if(activeScene==1) enemy1.moveEnemies1(enemies);
     if(activeScene==2) enemy2.moveEnemie2(enemies2);
     if(activeScene==3) enemy3.moveEnemies3(enemies3);
     if(activeScene==4) enemy4.moveEnemie4(enemies4);
@@ -174,13 +193,13 @@ void sonerit::moveEnemies(){
 
 void sonerit::enemyShoot(){
     for(auto enm:activeEnemies){
-        QGraphicsItem* temp = ui->graphicsView->scene()->addEllipse(0,0,10,10,QPen(Qt::black),Qt::yellow);
+        QGraphicsItem* temp = ui->graphicsView->scene()->addEllipse(0,0,30,30,QPen(Qt::transparent),activeBrushBullet);
         temp->setPos(enm->x(),enm->y());
         bullets.push_back(temp);
     }
     timerM  = new QTimer(this);
     connect(timerM,SIGNAL(timeout()),this,SLOT(moveBullet()));
-    timerM->start(50);
+    timerM->start(bulletTime);
 
 }
 
@@ -190,11 +209,9 @@ void sonerit::moveBullet(){
         for(auto bull:bullets){
             if(bull->collidesWithItem(h1)||bull->collidesWithItem(h2)||detectCollision(bull)||(bull->x())<=(100)){
                 if(bull->collidesWithItem(h1)){
-                    ui->graphicsView->scene()->addRect(bull->x(),bull->y(),10,10,QPen(Qt::red),Qt::red);
                     heroHealth1-=enmArray[activeScene-1].getDamage();
                 }
                 if(bull->collidesWithItem(h2)){
-                    ui->graphicsView->scene()->addRect(bull->x(),bull->y(),10,10,QPen(Qt::red),Qt::red);
                     heroHealth2-=enmArray[activeScene-1].getDamage();
                 }
                 ui->graphicsView->scene()->removeItem(bull);
@@ -222,7 +239,6 @@ void sonerit::moveBullet(){
         for(auto bull:bullets){
             if(bull->collidesWithItem(h1)||detectCollision(bull)||(bull->x())<=(100)){
                 if(bull->collidesWithItem(h1)){
-                    ui->graphicsView->scene()->addRect(bull->x(),bull->y(),10,10,QPen(Qt::red),Qt::red);
                     heroHealth1-=enmArray[activeScene-1].getDamage();
                 }
                 ui->graphicsView->scene()->removeItem(bull);
@@ -250,101 +266,132 @@ void sonerit::moveBullet(){
 
 void sonerit::keyPressEvent(QKeyEvent *event){
     int movingSpace = 7;
-    if(event->key()==Qt::Key_E&&(heroBullets.size()==0)) createHeroBullet(h1);
-    switch (event->key()) {
-    case Qt::Key_A:{
+    if(event->key()==Qt::Key_E&&(hero1Bullet.size()==0)&&h1->isEnabled())
+        createHero1Bullet();
+    if(event->key()==Qt::Key_U&&(hero2Bullet.size()==0)&&h2->isEnabled())
+        createHero2Bullet();
+    if(event->key()==Qt::Key_A&&h1->isEnabled()){
         h1XPOS-=movingSpace;
         heroS->changeDirection(210);
+        direction1='l';
         if(detectCollision(h1)) h1XPOS+=2*movingSpace;
     }
-        break;
-    case Qt::Key_W:{
+    if(event->key()==Qt::Key_W&&h1->isEnabled()){
         h1YPOS-=movingSpace;
         heroS->changeDirection(140);
+        direction1='u';
         if(detectCollision(h1)) h1YPOS+=2*movingSpace;
     }
-        break;
-    case Qt::Key_D:{
+    if(event->key()==Qt::Key_D&&h1->isEnabled()){
         h1XPOS+=movingSpace;
         heroS->changeDirection(70);
+        direction1='r';
         if(detectCollision(h1)) h1XPOS-=2*movingSpace;
-
     }
-        break;
-    case Qt::Key_S:{
+    if(event->key()==Qt::Key_S&&h1->isEnabled()){
         h1YPOS+=movingSpace;
         heroS->changeDirection(0);
+        direction1='d';
         if(detectCollision(h1)) h1YPOS-=2*movingSpace;
-
     }
-        break;
-    case Qt::Key_H:{
+    if(event->key()==Qt::Key_J&&secondHeroExists&&h2->isEnabled()){
         h2XPOS-=movingSpace;
         heroS2->changeDirection(210);
+        direction1='l';
         if(detectCollision(h2)) h2XPOS+=2*movingSpace;
     }
-        break;
-    case Qt::Key_U:{
+    if(event->key()==Qt::Key_I&&secondHeroExists&&h2->isEnabled()){
         h2YPOS-=movingSpace;
         heroS2->changeDirection(140);
+        direction1='u';
         if(detectCollision(h2)) h2YPOS+=2*movingSpace;
     }
-        break;
-    case Qt::Key_K:{
+    if(event->key()==Qt::Key_L&&secondHeroExists&&h2->isEnabled()){
         h2XPOS+=movingSpace;
         heroS2->changeDirection(70);
+        direction1='r';
         if(detectCollision(h2)) h2XPOS-=2*movingSpace;
     }
-        break;
-    case Qt::Key_J:{
+    if(event->key()==Qt::Key_K&&secondHeroExists&&h2->isEnabled()){
         h2YPOS+=movingSpace;
         heroS2->changeDirection(0);
+        direction1='d';
         if(detectCollision(h2)) h2YPOS-=2*movingSpace;
-
     }
-        break;
+    switch (event->key()) {
+
     case Qt::Key_X:{
         changeScene();
-
     }
         break;
     }
 }
 
 bool sonerit::detectCollision(QGraphicsItem* object){
-    if(activeScene==1){
-        for(auto block:blocksVector){
-            if(object->collidesWithItem(block)){
-                return true;
+        if(activeScene==1){
+            for(auto block:blocksVector){
+                if(object->collidesWithItem(block)){
+                    return true;
+                }
             }
         }
-    }
-    else if(activeScene==2||activeScene==4||activeScene==5){
-        for(auto block:blocksVectorChief){
-            if(object->collidesWithItem(block)){
-                return true;
+        else if(activeScene==2||activeScene==4||activeScene==5){
+           for(auto block:blocksVectorChief){
+                if(object->collidesWithItem(block)){
+                    return true;
+                }
             }
         }
-    }
-    else if(activeScene==3){
-        for(auto block:blocksVector3){
-            if(object->collidesWithItem(block)){
-                return true;
+        else if(activeScene==3){
+            for(auto block:blocksVector3){
+                if(object->collidesWithItem(block)){
+                    return true;
+                }
+            }
+        }
+    return false;
+}
+
+bool sonerit::detectBulletCollision(std::list<QGraphicsItem*>* ls){
+    for(auto bu:*ls){
+        if(activeScene==1){
+            for(auto block:blocksVector){
+                if(bu->collidesWithItem(block)){
+                    return true;
+                }
+            }
+        }
+        else if(activeScene==2||activeScene==4||activeScene==5){
+            for(auto block:blocksVectorChief){
+                if(bu->collidesWithItem(block)){
+                    return true;
+                }
+            }
+        }
+        else if(activeScene==3){
+            for(auto block:blocksVector3){
+                if(bu->collidesWithItem(block)){
+                    return true;
+                }
             }
         }
     }
     return false;
 }
 
-bool sonerit::bullCollToEnm(){
+bool sonerit::bullCollToEnm(std::list<QGraphicsItem*> ls){
     int i=0;
-    for(auto bull:heroBullets){
+    for(auto bull:ls){
         for(auto enm:activeEnemies){
             if(bull->collidesWithItem(enm)){
-
                 enemiesHealth[i] -= Hero.getDamage();
-                if(enemiesHealth[i]<=0) ui->graphicsView->scene()->removeItem(activeEnemies.at(i));
-                std::cout<<enemiesHealth[i]<<std::endl;
+                points+=25;
+                if(enemiesHealth[i]<=0){
+                    points+=30;
+                    ui->graphicsView->scene()->removeItem(activeEnemies.at(i));
+                    enemiesHealth.erase(enemiesHealth.cbegin()+i);
+                    activeEnemies.erase(activeEnemies.cbegin()+i);
+                }
                 return true;
             }
             i++;
@@ -355,14 +402,28 @@ bool sonerit::bullCollToEnm(){
 
 void sonerit::on_pushButton_clicked()
 {
+    if(gameInfo.size()==4){
+        playerName1 = gameInfo.at(0);
+        activeScene = stoi(gameInfo.at(1));
+        points = stoi(gameInfo.at(3));
+        saveRecord();
+    }
+    else if(gameInfo.size()==6){
+        playerName1 = gameInfo.at(0);
+        playerName2 = gameInfo.at(1);
+        activeScene = stoi(gameInfo.at(2));
+        points = stoi(gameInfo.at(3));
+        saveRecord();
+    }
     ui->label_player1_name->setText(ui->textEdit_player1->toPlainText()+" Health:");
+    playerName1 = ui->textEdit_player1->toPlainText().toLocal8Bit().constData();
+    heroHealth1 = Hero.getHealth();
     if(ui->checkBox->checkState()==Qt::Checked){
         secondHeroExists = true;
         ui->label_player2_name->setText(ui->textEdit_player2->toPlainText()+" Health:");
+        playerName2 = ui->textEdit_player2->toPlainText().toLocal8Bit().constData();
+        heroHealth2 = Hero.getHealth();
     }
-
-    heroHealth1 = Hero.getHealth();
-    heroHealth2 = Hero.getHealth();
 
     changeScene();
 
@@ -372,48 +433,129 @@ void sonerit::on_pushButton_clicked()
     ui->pushButton->~QPushButton();
     ui->checkBox->~QCheckBox();
     checkStart->~QTimer();
+    ui->textEdit_player1->~QPlainTextEdit();
+    ui->textEdit_player2->~QPlainTextEdit();
+    ui->label_2->~QLabel();
+    ui->label_3->~QLabel();
 }
 
-void sonerit::createHeroBullet(QGraphicsItem* hr)
+void sonerit::createHero1Bullet()
 {
     timerMov->stop();
     timerMov->start(10);
-    qreal x=hr->x()+70, y=hr->y()+35;
-    QGraphicsItem* temp = ui->graphicsView->scene()->addRect(0,0,10,10,QPen(Qt::transparent),Hero.getBrush());
+    qreal x=h1->x()+15, y=h1->y()+15;
+    QGraphicsItem* temp = ui->graphicsView->scene()->addRect(0,0,30,30,QPen(Qt::transparent),Hero.getBrush());
     temp->setPos(x,y);
-    heroBullets.push_front(temp);
-    //if(timerHB->isActive()) timerHB->stop();
+    hero1Bullet.push_front(temp);
     timerHB = new QTimer(this);
-    connect(timerHB,SIGNAL(timeout()),this,SLOT(moveHeroBullets()));
+    if(direction1=='d') connect(timerHB,&QTimer::timeout,this,[=](){
+        moveHeroBulletsDown(&hero1Bullet);
+    });
+    else if(direction1=='u') connect(timerHB,&QTimer::timeout,this,[=](){
+        moveHeroBulletsUp(&hero1Bullet);
+    });
+    else if(direction1=='r') connect(timerHB,&QTimer::timeout,this,[=](){
+        moveHeroBulletsRight(&hero1Bullet);
+    });
+    else if(direction1=='l') connect(timerHB,&QTimer::timeout,this,[=](){
+        moveHeroBulletsLeft(&hero1Bullet);
+    });
     timerHB->start(50);
 }
 
-void sonerit::moveHeroBullets()
+void sonerit::createHero2Bullet()
+{
+    timerMov->stop();
+    timerMov->start(10);
+    qreal x=h2->x()+15, y=h2->y()+15;
+    QGraphicsItem* temp = ui->graphicsView->scene()->addRect(0,0,30,30,QPen(Qt::transparent),Hero.getBrush());
+    temp->setPos(x,y);
+    hero2Bullet.push_front(temp);
+
+    if(direction1=='d') connect(timer2HB,&QTimer::timeout,this,[=](){
+        moveHeroBulletsDown(&hero2Bullet);
+    });
+    else if(direction1=='u') connect(timer2HB,&QTimer::timeout,this,[=](){
+        moveHeroBulletsUp(&hero2Bullet);
+    });
+    else if(direction1=='r') connect(timer2HB,&QTimer::timeout,this,[=](){
+        moveHeroBulletsRight(&hero2Bullet);
+    });
+    else if(direction1=='l') connect(timer2HB,&QTimer::timeout,this,[=](){
+        moveHeroBulletsLeft(&hero2Bullet);
+    });
+    timer2HB->start(50);
+}
+
+void sonerit::moveHeroBulletsRight(std::list<QGraphicsItem*>* ls)
 {
     const int movSpeed = 15;
-        for(auto bull:heroBullets){
-            if(bullCollToEnm()||detectCollision(bull)||(bull->x())>=(1100)){
-                if(bullCollToEnm()){
-                    ui->graphicsView->scene()->addRect(bull->x(),bull->y(),10,10,QPen(Qt::red),Qt::green);
+        for(auto bull:*ls){
+            if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
+                if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
+                    ls->erase(ls->begin());
+                    if(ls==&hero1Bullet)
+                        timerHB->stop();
+                    else if(ls==&hero2Bullet)
+                        timer2HB->stop();
                 }
                 ui->graphicsView->scene()->removeItem(bull);
-                if(bullCollToEnm()||detectCollision(bull)){
-                    std::list<QGraphicsItem*>::iterator it;
-                    for (auto itr = heroBullets.begin();itr != heroBullets.end(); itr++) {
-                            if(*itr==bull){
-                                it=itr;
-                                heroBullets.erase(it);
-                                timerHB->stop();
-                                break;
-                            }
-                     }
-                }
-                if((bull->x())>=(1100)){
-                    heroBullets.pop_back();
-                    timerHB->stop();
-                }
             }
             else bull->setPos(bull->x()+movSpeed,bull->y());
+        }
+}
+
+void sonerit::moveHeroBulletsLeft(std::list<QGraphicsItem*>* ls)
+{
+    const int movSpeed = 15;
+        for(auto bull:*ls){
+            if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
+                if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
+                    ls->erase(ls->begin());
+                    if(ls==&hero1Bullet)
+                        timerHB->stop();
+                    else if(ls==&hero2Bullet)
+                        timer2HB->stop();
+                }
+                ui->graphicsView->scene()->removeItem(bull);
+            }
+            else bull->setPos(bull->x()-movSpeed,bull->y());
+        }
+}
+
+void sonerit::moveHeroBulletsUp(std::list<QGraphicsItem*>* ls)
+{
+    const int movSpeed = 15;
+        for(auto bull:*ls){
+            if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
+                if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
+                    ls->erase(ls->begin());
+                    if(ls==&hero1Bullet)
+                        timerHB->stop();
+                    else if(ls==&hero2Bullet)
+                        timer2HB->stop();
+                }
+                ui->graphicsView->scene()->removeItem(bull);
+            }
+            else bull->setPos(bull->x(),bull->y()-movSpeed);
+        }
+}
+
+void sonerit::moveHeroBulletsDown(std::list<QGraphicsItem*>* ls)
+{
+    const int movSpeed = 15;
+        for(auto bull:*ls){
+            if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
+                if(bullCollToEnm(*ls)||detectBulletCollision(ls)){
+                    ls->erase(ls->begin());
+                    if(ls==&hero1Bullet)
+                        timerHB->stop();
+                    else if(ls==&hero2Bullet)
+                        timer2HB->stop();
+                }
+                ui->graphicsView->scene()->removeItem(bull);
+            }
+            else bull->setPos(bull->x(),bull->y()+movSpeed);
         }
 }
 
@@ -421,17 +563,24 @@ void sonerit::on_continue_button_clicked()
 {
     loadGame();
     checkStart->~QTimer();
+    ui->continue_button->~QPushButton();
+    ui->pushButton->~QPushButton();
+    ui->checkBox->~QCheckBox();
+    ui->textEdit_player1->~QPlainTextEdit();
+    ui->textEdit_player2->~QPlainTextEdit();
+    ui->label_2->~QLabel();
+    ui->label_3->~QLabel();
 }
 
 void sonerit::createHero(){
     h1XPOS=h1XPOS_O, h1YPOS=h1YPOS_O,h2XPOS=h2XPOS_O, h2YPOS=h2YPOS_O;
-    h1 = ui->graphicsView->scene()->addRect(0,0,70,70,QPen(Qt::black),Qt::transparent);
+    h1 = ui->graphicsView->scene()->addRect(0,0,70,70,QPen(Qt::transparent),Qt::transparent);
     h1->setPos(h1XPOS,h1YPOS);
     heroS = new sprite();
     ui->graphicsView->scene()->addItem(heroS);
     heroS->setPos(h1XPOS,h1YPOS);
     if(secondHeroExists){
-        h2 = ui->graphicsView->scene()->addRect(0,0,70,70,QPen(Qt::red),Qt::transparent);
+        h2 = ui->graphicsView->scene()->addRect(0,0,70,70,QPen(Qt::transparent),Qt::transparent);
         h2->setPos(h2XPOS,h2YPOS);
         heroS2 = new sprite();
         ui->graphicsView->scene()->addItem(heroS2);
@@ -440,14 +589,33 @@ void sonerit::createHero(){
 }
 
 void sonerit::checkStatus(){
-    for(unsigned long long x=0;x<enemiesHealth.size();x++){
-        if(enemiesHealth[x]>0) break;
-        if(x==(enemiesHealth.size()-1)){
-            changeScene();
+    if(enemiesHealth.size()==0) changeScene();
+    if(heroHealth1<=0){
+        heroHealth1=0;
+        h1->setEnabled(false);
+        heroS->hide();
+        if(!secondHeroExists){
+            ui->label_gameover->setText("GAME OVER!");
+            saveRecord();
+            stopTimers();
         }
     }
+
     ui->lcd_health1->display(heroHealth1);
-    if(secondHeroExists) ui->lcd_health2->display(heroHealth2);
+    if(secondHeroExists){
+        if(heroHealth2<=0){
+            heroHealth2=0;
+            h2->setActive(false);
+            heroS2->hide();
+            if(!h1->isEnabled()){
+                ui->label_gameover->setText("GAME OVER!");
+                saveRecord();
+                stopTimers();
+            }
+        }
+        ui->lcd_health2->display(heroHealth2);
+    }
+    ui->lcd_points->display(points);
 }
 
 void sonerit::checkScndPly()
@@ -483,12 +651,12 @@ void sonerit::saveGame()
 {
     std::string data;
     if(secondHeroExists){
-        std::string data = playerName1+','+playerName2+','+std::to_string(activeScene)+
+        data = playerName1+','+playerName2+','+std::to_string(activeScene)+
                 ','+std::to_string(heroHealth1)+','+std::to_string(heroHealth2)+
                 ','+std::to_string(points)+';';
     }
     else{
-        std::string data = playerName1+','+std::to_string(activeScene)+
+        data = playerName1+','+std::to_string(activeScene)+
                 ','+std::to_string(heroHealth1)+','+std::to_string(points)+';';
     }
     std::ofstream outFile;
@@ -497,11 +665,70 @@ void sonerit::saveGame()
     outFile.close();
 }
 
+void sonerit::saveRecord()
+{
+    std::vector<std::string> recordInfo {};
+    std::ifstream inFile;
+    inFile.open(RCRD);
+    std::string data;
+    while(1){
+        inFile>>data;
+        if(data=="!") break;
+        recordInfo.push_back(data);
+    }
+    inFile.close();
+
+    std::ofstream outFile;
+    outFile.open(RCRD);
+    if(secondHeroExists){
+        data = playerName1+','+playerName2+','+std::to_string(activeScene)+
+                ','+std::to_string(points);
+    }
+    else{
+        data = playerName1+','+std::to_string(activeScene)+','+std::to_string(points);
+    }
+    for(unsigned long long g=0;g<=recordInfo.size();g++){
+        if(g==0) outFile << data << std::endl;
+        else{
+            outFile << recordInfo.at(g-1) << std::endl;
+        }
+    }
+    outFile.close();
+}
+
 void sonerit::startGameTimers()
 {
     timerMov->start(10);
     timerEnemyMov->start(10);
     timerLive->start(15);
-    timer->start(5000);
+    timer->start(shootingTime);
 
+}
+
+void sonerit::stopTimers(){
+    timer->stop();
+    timerLive->stop();
+    timerMov->stop();
+    timerM->stop();
+    timerHB->stop();
+    timer2HB->stop();
+    timerEnemyMov->stop();
+    timerTimeLeft->stop();
+}
+
+void sonerit::timerCount(){
+    if(activeScene==5){
+        ui->lcd_llt->display(lastLvlTime);
+        lastLvlTime-=1;
+        if(lastLvlTime==-1){
+            ui->label_gameover->setText("GAME OVER!");
+            saveRecord();
+            stopTimers();
+        }
+    }
+    timeLeft-=1;
+    ui->lcd_time->display(timeLeft);
+    if(timeLeft==0){
+        timerTimeLeft->stop();
+    }
 }

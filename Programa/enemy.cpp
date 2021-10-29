@@ -23,6 +23,7 @@ enemy::enemy(int _health, int _damage, float _vx, float _vy, float _a)
     vx = _vx;
     vxo = _vx;
     vy = _vy;
+    vyo = _vy;
     a = _a;
 }
 enemy::enemy(QString s, int _size)
@@ -31,7 +32,7 @@ enemy::enemy(QString s, int _size)
     shapeBrush = new QBrush(charImg.scaled(_size,_size,Qt::KeepAspectRatio));
 }
 
-void enemy::moveEnemies1(std::vector<QGraphicsRectItem*> enems, std::vector<QGraphicsRectItem*> vctr,int* movConst,qreal* posY)
+void enemy::moveEnemies1(std::vector<QGraphicsRectItem*> enems)
 {
     for(auto enm:enems){
         float t = 0.1;
@@ -44,27 +45,6 @@ void enemy::moveEnemies1(std::vector<QGraphicsRectItem*> enems, std::vector<QGra
             vy=-vy;
         }
     }
-    /*int i=1;
-    for(auto ene:enems){
-        ene->setPos(ene->x(),(*posY)+(i*100));
-        if(detectCollision(ene,vctr)){
-            if(*movConst>0){
-                int j=0;
-                for(auto enm:enems){
-                    enm->setPos(enm->x(),440+(j*100));
-                    j++;}
-            }
-            else if(*movConst<0){
-                int j=0;
-                for(auto enm:enems){
-                    enm->setPos(enm->x(),50+(j*50));
-                    j++;}
-            }
-            *movConst= -(*movConst);
-            break;
-        }
-        i++;
-    }*/
 }
 
 void enemy::moveEnemie2(std::vector<QGraphicsRectItem*> enems)
@@ -112,7 +92,21 @@ void enemy::moveEnemies3(std::vector<QGraphicsRectItem*> enems)
         x += (vx*t)+(ax*t*t)/2.0;
         vx += ax*t;
         vy += ay*t;
-        enm->setPos(x,y);
+        enm->setPos(x,y);*/
+
+    /*ax = a*cos(atan2(py,px));
+    ay = a*sin(atan2(py,px));
+    py += (vy*t)+(ay*t*t)/2.0;
+    px += (vx*t)+(ax*t*t)/2.0;
+
+    vx += ax*t;
+    vy += ay*t;
+
+    v = sqrt((vx*vx)+(vy*vy));
+    if(int(py)==0&&px>0){
+        px=100.0;
+        py=0.0;
+    }
     }*/
 }
 
@@ -121,30 +115,48 @@ void enemy::moveEnemie4(std::vector<QGraphicsRectItem*> enems)
     for(auto enm:enems){
 
         float t=0.1;
-        /*float px=enm->x(),py=enm->y();
+        float px=enm->x(),py=enm->y();
         float ax = a*cos(atan2(500-py,900-px)),
                 ay = a*sin(atan2(500-py,900-px));
         py += (vy*t)+(ay*t*t)/2.0;
         px += (vx*t)+(ax*t*t)/2.0;
         vx += ax*t;
         vy += ay*t;
+        if(int(py)==500&&px>900){
+            px=1000.0;
+            py=500.0;
+            vx=vxo;
+            vy=vyo;
+        }
         enm->setPos(px,py);
-        */
-        float y = enm->y()+(vy*t);
-        enm->setPos(enm->x(),y);
-        if(y>=695){
-            vy=-vy;
-        }
-        else if(y<=55){
-            vy=-vy;
-        }
     }
 }
 
 void enemy::moveEnemie5(std::vector<QGraphicsRectItem*> enems)
 {
     for(auto enm:enems){
+        float t=0.01;
+        float px=enm->x(), py=enm->y();
+        float ax=-(px-500), ay=-(py-375);
 
+        px+= (vx*t)+((ax*t*t)/2.0);
+
+        vx += ax*t;
+
+        if(px==500){
+            px=500.0;
+            vx=(-vx/vx)*250.0;
+        }
+
+        py+= (vy*t)+((ay*t*t)/2.0);
+
+        vy += ay*t;
+
+        if(py==200){
+            py=200.0;
+            vy=(-vy/vy)*200.0;
+        }
+        enm->setPos(enm->x(),py);
     }
 }
 
